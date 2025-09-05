@@ -1,9 +1,98 @@
+version: "3.9"
+
 services:
   postgres:
-    image: 'postgres:latest'
+    image: postgres:16-alpine
+    container_name: mmm_postgres
+    restart: unless-stopped
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      POSTGRES_USER: ${POSTGRES_USER:-mmm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mmm}
+      POSTGRES_DB: ${POSTGRES_DB:-mmm}
+      TZ: ${TZ:-UTC}
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - '5432'
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - mmm_pgdata:/var/lib/postgresql/data
+      - ./ops/db/init:/docker-entrypoint-initdb.d:ro # put .sql/.sh for schema/seed here
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mmm_net
+
+  app:
+    build:
+      context: .
+      target: runtime
+    container_name: mmm_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: MassiveMarketManager
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-mmm}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-mmm}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-mmm}
+      # Choose schema strategy for dev; switch to Flyway/Liquibase in prod
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
+      SERVER_PORT: 8080
+      TZ: ${TZ:-UTC}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    networks:
+      - mmm_net
+
+  # Admin UI (enable with: docker compose --profile ops up)
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: mmm_pgadmin
+    restart: unless-stopped
+    profiles: ["ops"]
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      TZ: ${TZ:-UTC}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mmm_net
+
+  # Nightly backups (enable with: docker compose --profile ops up)
+  pgbackups:
+    image: prodrigestivill/postgres-backup-local:16
+    container_name: mmm_pgbackups
+    restart: unless-stopped
+    profiles: ["ops"]
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-mmm}
+      POSTGRES_USER: ${POSTGRES_USER:-mmm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mmm}
+      SCHEDULE: "@daily"
+      BACKUP_DIR: /backups
+      BACKUP_KEEP_DAYS: "7"
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ./ops/backups:/backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mmm_net
+
+volumes:
+  mmm_pgdata:
+
+networks:
+  mmm_net:
+    driver: bridge
