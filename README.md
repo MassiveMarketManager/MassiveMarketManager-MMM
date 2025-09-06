@@ -58,12 +58,15 @@ This architecture allows MMM to operate as a scalable, modular DeFi instrument c
 
 **Example `.env`:**
 ```env
-POSTGRES_USER=tradingbro
-POSTGRES_PASSWORD=tradingbro_pw
-POSTGRES_DB=tradingbro
+POSTGRES_USER=mmm
+POSTGRES_PASSWORD=mmm_password
+POSTGRES_DB=mmm
+POSTGRES_PORT=5432
 APP_PORT=8080
 FRONTEND_PORT=3000
 SPRING_PROFILES_ACTIVE=dev
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
+TZ=UTC
 ```
 
 ---
