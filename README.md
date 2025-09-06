@@ -1,147 +1,95 @@
-# MassiveMarketManager (MMM)
+# MassiveMarketManager - MMM
 
-A clean, opinionated backend for crypto spot trading (Uniswap L2 first).
-Built for reliability, simple ops, and clear reporting.
+An advanced AI-driven trading system designed for decentralized finance (DeFi).  
+TradingBro integrates **machine learning algorithms**, **deep learning models**, and **audited smart contracts** to enable fully automated spot trading on leading L2 networks (Arbitrum, Base, Optimism).  
 
----
+The platform combines three core layers:  
+- **Data & Analytics** — continuous ingestion of on-chain market data, calculation of technical indicators, and generation of trading signals.  
+- **Decision & Execution** — ML/DL models for short-term market prediction, integrated with a robust risk-management engine and secure smart-contract execution.  
+- **User Experience** — a modular backend powering a responsive frontend dashboard that provides transparency, performance metrics, and strategy customization.  
 
-## 👀 What it does
-
-- Pulls on-chain market data (via The Graph) and stores candles.
-- Calculates indicators (e.g., RSI/EMA/ATR/OBV).
-- Runs strategies with risk checks before execution.
-- Tracks orders, trades, balances and PnL.
-- Exposes REST APIs for a dashboard.
-
-> Scope today: stable backend foundation + data/strategy/exec pipeline.
-> Frontend and advanced analytics can be added on top.
+This architecture allows MMM to operate as a scalable, modular DeFi instrument capable of supporting multiple strategies, adapting to volatile markets, and ensuring security through strict key management and contract audits.
 
 ---
 
-## ⚙️ Tech Stack
+## 🔎 What It Does
 
-- **Language/Runtime:** Java 21
-- **Framework:** Spring Boot 4 (Web, Data JPA, Validation, Actuator)
-- **Database:** PostgreSQL 16 (ACID, JSONB, window functions)
-- **Build:** Maven 3.9.x
-- **Containers:** Docker & Docker Compose
-- **CI/CD:** GitHub Actions → JAR build, coverage (JaCoCo), Docker image → GHCR
-- **Config:** `.env` for local dev; Spring profiles (`dev`, `docker`)
-- **Later (optional):** TimescaleDB (time‑series), ClickHouse (heavy offline analytics)
+- Collects and analyzes on-chain market data (via The Graph).
+- Uses ML/DL models to predict short-term market movements.
+- Executes trades automatically through audited smart contracts.
+- Applies risk management rules to protect funds.
+- Provides a web dashboard for strategy settings, monitoring, and reporting.
 
 ---
 
-## 📁 Repo Layout
+## 🛠 Tech Stack
 
-```
-/
-├─ backend/                 # Spring Boot app
-│  ├─ src/…
-│  ├─ pom.xml
-│  ├─ Dockerfile
-│  └─ application.yml
-├─ .github/workflows/       # CI workflows
-├─ docker-compose.yml
-└─ .env                     # local only (ignored by git)
-```
+- **Backend:** Java 21, Spring Boot 4, PostgreSQL 16 + TimescaleDB extension, Maven 3.9.x, Lombok, MapStruct, Docker Compose, JUnit 5, GitLab CI/CD / GitHub Actions
+- **Frontend:** React (dashboard for monitoring & control)  
+- **Smart Contracts:** Solidity (execution on Uniswap/DEX)  
+- **ML/AI Core:** Python (ML/DL models, indicators)
 
 ---
 
-## 🚀 Quick Start (Local)
+## 📂 Architecture Overview
 
-**Requirements:** Docker, Docker Compose (and optionally JDK 21 + Maven for local runs).
+- **Data Module** — collects and stores candles, indicators.  
+- **ML/AI Module** — trains and runs models for predictions.  
+- **Execution Module** — places and tracks trades via Uniswap adapters.  
+- **Backend API** — REST endpoints for portfolio, strategies, and reporting.  
+- **Frontend Dashboard** — user interface for monitoring and control.  
+- **Database** — stores users, strategies, trades, logs.
 
-1. Build and start:
+---
+
+## 🚀 Quick Start
+
+**Requirements:** Docker & Docker Compose  
+
+1. Clone the repo and create a `.env` file (see example below).  
+2. Start services:  
    ```bash
-   docker compose build
-   docker compose up -d
-   ```
+   docker compose up -d --build
+   ```  
+3. Access:
+   - API: [http://localhost:8080](http://localhost:8080)  
+   - Dashboard: [http://localhost:3000](http://localhost:3000)  
+   - Database: `localhost:5432`  
 
-2. Default ports:
-   - App: `http://localhost:8080`
-   - Postgres: `localhost:5432` (DB: `mmm`, user: `mmm`, password: `mmm_password`)
-
-3. Example `.env` (keep out of git):
-   ```env
-   POSTGRES_USER=mmm
-   POSTGRES_PASSWORD=mmm_password
-   POSTGRES_DB=mmm
-   POSTGRES_PORT=5432
-   APP_PORT=8080
-   SPRING_PROFILES_ACTIVE=dev
-   SPRING_JPA_HIBERNATE_DDL_AUTO=update
-   TZ=UTC
-   ```
+**Example `.env`:**
+```env
+POSTGRES_USER=tradingbro
+POSTGRES_PASSWORD=tradingbro_pw
+POSTGRES_DB=tradingbro
+APP_PORT=8080
+FRONTEND_PORT=3000
+SPRING_PROFILES_ACTIVE=dev
+```
 
 ---
 
-## 🧪 Tests & Coverage
+## 🧭 Roadmap (Indicative)
 
-- Maven runs `clean verify`. If there are no tests yet, the build still succeeds.
-- JaCoCo report appears at `backend/target/site/jacoco/jacoco.xml` when tests exist.
-- Coverage badge & summary are posted to the GitHub job summary automatically when the report is present.
-
----
-
-## 🔁 CI/CD (GitHub Actions)
-
-Workflow: `.github/workflows/backend-ci.yml`
-
-- Triggers:
-  - Pushes to `feature/backend`.
-  - Pull requests targeting `main`.
-- Jobs:
-  1) **Build/Test/Coverage** — JDK 21, `mvn clean verify`, upload reports & coverage.
-  2) **Docker Build & Push** — builds the backend image from `backend/Dockerfile` and pushes to GHCR.
-
-**Image tags:**
-- `ghcr.io/<owner>/massivemarketmanager-backend:<commit_sha>`
-- `ghcr.io/<owner>/massivemarketmanager-backend:feature-backend`
-
-**One-time GitHub setup:**
-- Repository → **Settings → Actions → General → Workflow permissions** → enable **Read and write permissions** (so `GITHUB_TOKEN` can push to GHCR).
+- **Phase 1:** Core architecture, DB schema, Docker setup  
+- **Phase 2:** Data ingestion + technical indicators  
+- **Phase 3:** ML/DL research & integration  
+- **Phase 4:** Trade execution with risk rules  
+- **Phase 5:** Dashboard & API for monitoring  
+- **Phase 6:** Security, audits, performance tuning  
 
 ---
 
-## 🧠 Domain (Initial)
+## 👥 Team
 
-- Users, Portfolios, Accounts
-- Instruments/Pairs, Candles (1h baseline)
-- StrategyConfig, RiskRules
-- Orders, Trades, Positions
-- Audit & RunLogs
-
----
-
-## 🗺️ Roadmap & Timeline (indicative)
-
-- **Phase 0 — Infra & CI (Week 1)**  
-  Dockerfile, docker-compose, Postgres schema bootstrap, CI to GHCR.
-
-- **Phase 1 — Domain & Persistence (Weeks 2–3)**  
-  Entities, repositories, Flyway migrations, CRUD for core objects.
-
-- **Phase 2 — Ingestion & Indicators (Weeks 3–4)**  
-  The Graph puller + schedulers, compute & persist indicators.
-
-- **Phase 3 — Strategy & Risk (Weeks 5–6)**  
-  Strategy SPI, sample momentum strategy, risk checks (exposure/slippage/cooldowns).
-
-- **Phase 4 — Execution (Weeks 6–7)**  
-  Uniswap adapter, order lifecycle, settlement tracking.
-
-- **Phase 5 — API & Dashboard hooks (Weeks 7–8)**  
-  REST endpoints for metrics, PnL, runs; basic auth.
-
-- **Phase 6 — Ops & Observability (Week 9)**  
-  Actuator, structured logs, retention policies.
-
-- **Phase 7 — Hardening (Week 10)**  
-  Retries/backoff, circuit breakers, E2E smoke.
+- **Smart Contracts Developer** — Artem Zagorskyi/Nikolai Milenko - Solidity, Ethers.js/Hardhat  
+- **ML/AI Engineer** - Artem Zagorskyi — market data modeling, training pipelines  
+- **Backend Developer** - Nikolai Milenko — Spring Boot, API, persistence  
+- **Frontend Developer** - Artem Zagorskyi/Nikolai Milenko — dashboard, UX/UI  
 
 ---
 
 ## 🔐 Security Notes
 
-- No secrets in git. Use GitHub secrets / env-specific configs.
-- Keys/seed phrases stored outside DB (KMS/Vault). DB holds only references.
+- No private keys or secrets are stored in Git.  
+- API keys, seed phrases, and sensitive configs must be provided via environment variables or secret managers.  
+- Smart contracts undergo audits and use trusted libraries.
