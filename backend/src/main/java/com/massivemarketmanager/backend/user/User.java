@@ -1,12 +1,10 @@
 package com.massivemarketmanager.backend.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.massivemarketmanager.backend.balance.Balance;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 254)
     private String email;
 
-    @Column(name = "password_hash", nullable = false, length = 255)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -62,8 +60,8 @@ public class User {
     private String pubWalletKey; // EVM address (0x... 42 chars) - at least I think so
 
     @JsonIgnore
-    @Column(name = "private_wallet_key", length = 66)
-    private String privateWalletKey;
+    @Column(name = "enc_private_wallet", length = 128) // base64(IV||CT||TAG)
+    private String encPrivateWallet;
 
     @Lob
     private String preferences; // JSON строка
