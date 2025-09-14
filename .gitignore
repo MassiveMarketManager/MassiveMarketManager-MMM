@@ -57,3 +57,5 @@ build/
 ### VS Code ###
 .vscode/
 .env
+
+backend/ops/backups/
