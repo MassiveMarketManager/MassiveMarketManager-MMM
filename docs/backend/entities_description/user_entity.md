@@ -1,32 +1,82 @@
-# User Entity Specification
+# User Entity Documentation
 
-## Required fields
-- `id: UUID` — unique identifier of the user.  
-- `firstName: String` — first name.  
-- `lastName: String` — last name.  
-- `email: String` — unique e-mail, used as login.  
-- `passwordHash: String` — hashed password.  
-- `balance: Decimal(18,2)` — current balance in the base currency (e.g., USDC).  
-- `createdAt: Timestamp` — registration date and time.  
+This document describes the fields of the `User` entity in the `com.massivemarketmanager.backend.user` package, grouped by category.  
+The entity uses a **`UserEntityListener`** to manage timestamps and normalize email values automatically.
 
-## Authentication & security
-- `lastLogin: Timestamp` — last login timestamp.  
-- `status: Enum(active, banned, deleted)` — account state.  
-- `role: Enum(user, admin)` — access level.  
+---
 
-## Trading activity
-- `tradeIds: Array<UUID>` or a relation to the trades table — list of user’s trades.  
-- `strategies: Array<UUID>` or a separate strategies table — one or multiple strategies.  
+## Identification
+- **`id : Long`**  
+  Primary key of the user entity. Generated using `GenerationType.IDENTITY`.
 
-## Financial parameters
-- `currency: String` — code of the balance currency (e.g., "USDC", "ETH").  
-- `walletAddress: String` — blockchain wallet address (if stored).  
-- `apiKeys: JSON` — exchange/contract API keys (encrypted).  
+- **`username : String`**  
+  Unique username of the user. Cannot be null.
 
-## Settings
-- `strategyParams: JSON` — trading strategy parameters (flexible format).  
-- `preferences: JSON` — user preferences (UI, notifications, etc.).  
+- **`email : String`**  
+  Unique email address. Maximum length: 254 characters. Cannot be null.  
+  - **Normalization rule:** On insert/update, the email is trimmed and converted to lowercase by `UserEntityListener`.
 
-## Audit
-- `updatedAt: Timestamp` — last profile update.  
-- `deletedAt: Timestamp | null` — deletion date, if using soft delete.  
+---
+
+## Authentication & Security
+- **`passwordHash : String`**  
+  Hashed password of the user, stored in column `password_hash`. Excluded from `toString()`.
+
+- **`pubWalletKey : String`**  
+  Public wallet key (EVM address, `0x...`, 42 characters). Unique, optional.
+
+- **`encPrivateWallet : String`**  
+  Encrypted private wallet key, stored as base64 (`IV||CT||TAG`). Ignored in JSON, excluded from `toString()`.
+
+---
+
+## Account & Role
+- **`accountStatus : AccountStatus`**  
+  Enum representing the status of the account. Cannot be null.
+
+- **`role : UserRole`**  
+  Enum representing the role of the user. Cannot be null.
+
+---
+
+## Financial & Trading Data
+- **`balances : List<Balance>`**  
+  User’s balances across currencies. Cascade = ALL, orphan removal enabled. Default: empty.
+
+- **`tradeIds : List<Long>`**  
+  IDs of trades linked to the user. Stored in `user_trades`. Default: empty.
+
+- **`strategies : List<Long>`**  
+  IDs of trading strategies linked to the user. Stored in `user_strategies`.
+
+- **`positions : List<Long>`**  
+  IDs of positions linked to the user. Stored in `user_positions`. Default: empty.
+
+---
+
+## Preferences & Settings
+- **`preferences : String`**  
+  JSON string with user preferences. Stored as a `Lob`.
+
+---
+
+## Audit & Lifecycle Timestamps
+- **`createdAt : LocalDateTime`**  
+  Creation timestamp. Cannot be null.  
+  - **Set automatically** on insert by `UserEntityListener`.
+
+- **`updatedAt : LocalDateTime`**  
+  Last update timestamp. Cannot be null.  
+  - **Set automatically** on insert and update by `UserEntityListener`.
+
+- **`deletedAt : LocalDateTime`**  
+  Soft deletion timestamp. Optional.
+
+- **`latestLogin : LocalDateTime`**  
+  Last login timestamp. Optional.
+
+---
+
+## Concurrency
+- **`version : Long`**  
+  Version field for optimistic locking. Automatically managed.
