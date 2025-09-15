@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"passwordHash", "privateWalletKey", "balances", "tradeIds", "strategies", "positions"})
+@ToString(exclude = {"passwordHash", "encPrivateWallet", "balances", "tradeIds", "strategies", "positions"})
 @EqualsAndHashCode(of = "id")
 @EntityListeners(UserEntityListener.class)
 @Entity
