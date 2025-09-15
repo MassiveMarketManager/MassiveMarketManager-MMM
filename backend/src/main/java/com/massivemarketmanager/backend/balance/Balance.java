@@ -21,7 +21,7 @@ public class Balance {
     )
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "token_name", nullable = false, unique = true)
     private String tokenName;
 
     private BigDecimal balance;
