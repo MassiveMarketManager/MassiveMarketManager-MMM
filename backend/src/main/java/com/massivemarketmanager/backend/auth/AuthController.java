@@ -15,10 +15,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private finale AuthService authService;
+    private final AuthService authService;
 
     @PostMapping("/sign-up")
     public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto request,
