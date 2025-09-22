@@ -24,31 +24,103 @@ services:
     networks:
       - mmm_net
 
-  vault:
+  # -------- DEV --------
+  vault-dev:
     image: hashicorp/vault:1.15
-    container_name: mmm_vault
-    restart: unless-stopped
+    container_name: mmm_vault_dev
+    profiles: ["dev"]
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN:-root}
       VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
-    ports:
-      - "${VAULT_PORT:-8200}:8200"
-    cap_add:
-      - IPC_LOCK
-    networks:
-      - mmm_net
+    cap_add: [IPC_LOCK]
+    ports: ["${VAULT_PORT:-8200}:8200"]
+    networks: [mmm_net]
+
+  vault-seed:
+    image: hashicorp/vault:1.15
+    container_name: mmm_vault_seed
+    profiles: [ "dev" ]
+    depends_on:
+      vault-dev: { condition: service_started }
+    environment:
+      VAULT_ADDR: http://vault-dev:8200
+      VAULT_TOKEN: ${VAULT_TOKEN:-root}
+      APP_MASTER_KEY_B64: ${APP_MASTER_KEY_B64:?set in .env}
+    command: >
+      sh -lc '
+        until vault status >/dev/null 2>&1; do
+          echo "waiting for vault...";
+          sleep 2;
+        done;
+        echo "vault is up";
+        vault secrets enable -path=secret kv-v2 || true;
+        vault kv put secret/app APP_MASTER_KEY_B64="$APP_MASTER_KEY_B64";
+      '
+    restart: "no"
+    networks: [ "mmm_net" ]
+
+  app-dev:
+    build:
+      context: .
+      target: runtime
+    container_name: mmm_backend_dev
+    profiles: ["dev"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      vault-dev: { condition: service_started }
+      vault-seed: { condition: service_completed_successfully }
+    environment:
+      SPRING_APPLICATION_NAME: MassiveMarketManager
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-mmm}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-mmm}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-mmm}
+      SERVER_PORT: 8080
+      TZ: ${TZ:-UTC}
+      # Spring Cloud Vault
+      SPRING_CONFIG_IMPORT: "vault://"
+      SPRING_CLOUD_VAULT_URI: http://vault-dev:8200
+      SPRING_CLOUD_VAULT_TOKEN: ${VAULT_TOKEN:-root}
+      SPRING_CLOUD_VAULT_KV_ENABLED: "true"
+      SPRING_CLOUD_VAULT_KV_BACKEND: secret
+      SPRING_CLOUD_VAULT_APPLICATION_NAME: app
+      # fail fast, чтобы падать с понятной ошибкой
+      SPRING_CLOUD_VAULT_FAIL_FAST: "true"
+    ports: [ "${APP_PORT:-8080}:8080" ]
+    networks: [ "mmm_net" ]
+
+  # -------- PROD --------
+  vault:
+    image: hashicorp/vault:1.15
+    container_name: mmm_vault
+    profiles: ["prod"]
+    command: ["server", "-config=/vault/config/server.hcl"]
+    environment:
+      VAULT_ADDR: http://127.0.0.1:8200
+      TZ: ${TZ:-UTC}
+    cap_add: [IPC_LOCK]
+    ports: ["${VAULT_PORT:-8200}:8200"]
+    volumes:
+      - vault_data:/vault/data
+      - ./ops/vault/config:/vault/config:ro
+    healthcheck:
+      test: ["CMD-SHELL", "vault status >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 15s
+    networks: [mmm_net]
 
   app:
     build:
       context: .
       target: runtime
     container_name: mmm_backend
+    profiles: ["prod"]
     restart: unless-stopped
     depends_on:
-      postgres:
-        condition: service_healthy
-      vault:
-        condition: service_started
+      postgres: { condition: service_healthy }
+      vault: { condition: service_healthy }
     environment:
       SPRING_APPLICATION_NAME: MassiveMarketManager
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
@@ -58,62 +130,18 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
       SERVER_PORT: 8080
       TZ: ${TZ:-UTC}
-      # Vault (Spring Cloud Vault)
       SPRING_CONFIG_IMPORT: "vault://"
       SPRING_CLOUD_VAULT_URI: http://vault:8200
       SPRING_CLOUD_VAULT_TOKEN: ${VAULT_TOKEN:-root}
       SPRING_CLOUD_VAULT_KV_ENABLED: "true"
       SPRING_CLOUD_VAULT_KV_BACKEND: secret
       SPRING_CLOUD_VAULT_APPLICATION_NAME: app
-    ports:
-      - "${APP_PORT:-8080}:8080"
-    networks:
-      - mmm_net
-
-  # Admin UI (enable with: docker compose --profile ops up)
-  pgadmin:
-    image: dpage/pgadmin4:8
-    container_name: mmm_pgadmin
-    restart: unless-stopped
-    profiles: ["ops"]
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-      TZ: ${TZ:-UTC}
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - mmm_net
-
-  # Nightly backups (enable with: docker compose --profile ops up)
-  pgbackups:
-    image: prodrigestivill/postgres-backup-local:16
-    container_name: mmm_pgbackups
-    restart: unless-stopped
-    profiles: ["ops"]
-    environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_DB: ${POSTGRES_DB:-mmm}
-      POSTGRES_USER: ${POSTGRES_USER:-mmm}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mmm}
-      SCHEDULE: "@daily"
-      BACKUP_DIR: /backups
-      BACKUP_KEEP_DAYS: "7"
-      TZ: ${TZ:-UTC}
-    volumes:
-      - ./ops/backups:/backups
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - mmm_net
+    ports: ["${APP_PORT:-8080}:8080"]
+    networks: [mmm_net]
 
 volumes:
   mmm_pgdata:
+  vault_data:
 
 networks:
   mmm_net:
