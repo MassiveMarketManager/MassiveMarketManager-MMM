@@ -38,20 +38,15 @@ public class PositionService {
             return strategyRepo.findByIdAndUserId(strategyId, user.getId())
                     .orElseThrow(() -> new IllegalArgumentException("strategy not found or not yours"));
         }
-        if (useDefault) return getOrCreateDefault(user);
+        if (useDefault) return createDefault(user);
         throw new IllegalArgumentException("either strategyId or useDefaultStrategy must be provided");
     }
 
-    private Strategy getOrCreateDefault(User user) {
+    private Strategy createDefault(User user) {
         Strategy s = Strategy.builder()
                 .user(user)
                 .build();
-        try {
-            return strategyRepo.saveAndFlush(s);
-        } catch (DataIntegrityViolationException e) {
-            // гонка: параллельный поток уже создал — перечитываем
-            return strategyRepo.findByUserIdAndIsDefaultTrue(user.getId()).orElseThrow();
-        }
+        return strategyRepo.saveAndFlush(s);
     }
 }
 
