@@ -2,6 +2,7 @@ package com.massivemarketmanager.backend.auth;
 
 
 import com.massivemarketmanager.backend.user.UserResponseDto;
+import jakarta.security.auth.message.AuthException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +42,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<AuthResponseDto> signIn(@Valid @RequestBody SignInRequestDto request) {
+    public ResponseEntity<AuthResponseDto> signIn(@Valid @RequestBody SignInRequestDto request) throws AuthException {
         AuthResponseDto body = authService.signIn(request);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CACHE_CONTROL, "no-store")
