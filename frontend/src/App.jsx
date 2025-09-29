@@ -2,7 +2,9 @@
 import { Routes, Route, Navigate } from "react-router-dom"
 import Signin from "./pages/Signin.jsx"
 import SignUp from "./pages/SignUp.jsx"
-import Dashboard from "./pages/Dashboard"
+import Dashboard from "./pages/Dashboard.jsx"
+import CheckEmailPage from './pages/CheckEmailPage.jsx'
+import VerifyEmailPage from './pages/VerifyEmailPage'
 import DashboardOverview from "@/components/dashboard/overview/dashboard-overview.jsx"
 import BotsDataTable from "@/components/dashboard/bots/bots-data-table"
 
@@ -19,6 +21,8 @@ function App() {
           <Route path="analytics" element={<></>} />
           <Route path="bots" element={<BotsDataTable/>} />
         </Route>
+        <Route path='/auth/check-email' element={<CheckEmailPage />} />
+        <Route path='/auth/verify' element={<VerifyEmailPage />} />
       </Routes>
   )
 }
