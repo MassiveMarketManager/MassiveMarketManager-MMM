@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -20,18 +17,19 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final VerificationService verificationService;
 
     @PostMapping("/sign-up")
     public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto request,
-                                                  UriComponentsBuilder uriBuilder) {
+                                                  UriComponentsBuilder uriBuilder) throws AuthException{
         UserResponseDto user = authService.register(request);
         URI location = uriBuilder.path("/users/{id}").buildAndExpand(user.id()).toUri();
         return ResponseEntity.created(location).body(user);
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<Void> verify(@Valid @RequestBody VerifyRequest request) {
-        authService.verifyEmail(request.token());
+    public ResponseEntity<Void> verify(@RequestParam("token") String token) throws AuthException {
+        verificationService.verify(token);
         return ResponseEntity.noContent().build();
     }
 
