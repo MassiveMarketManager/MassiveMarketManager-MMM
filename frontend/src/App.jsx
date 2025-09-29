@@ -18,7 +18,7 @@ function App() {
         <Route path='/auth/check-email' element={<CheckEmailPage />} />
         <Route path='/auth/verify' element={<VerifyEmailPage />} />
         <Route path="/dashboard" element={<Dashboard />} >
-          <Route index element={<DashboardOverview />} />
+          <Route index element={<Navigate to="overview" replace />} />
           <Route path="overview" element={<DashboardOverview />} />
           <Route path="analytics" element={<></>} />
           <Route path="bots" element={<DashboardBots/>} />

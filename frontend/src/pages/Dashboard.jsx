@@ -25,6 +25,8 @@ export default function Dashboard() {
 
   const { text, showSelector } = getHeaderConfig(location.pathname)
 
+  
+
   return (
     <SidebarProvider
       style={{
