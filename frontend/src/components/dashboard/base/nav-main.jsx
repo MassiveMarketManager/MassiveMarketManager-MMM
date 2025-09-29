@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sidebar"
 import { NavLink } from "react-router-dom"
 
-export function NavMain({ items, setHeader, setPeriodSelectorActive }) {
+export function NavMain({ items }) {
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -22,14 +22,6 @@ export function NavMain({ items, setHeader, setPeriodSelectorActive }) {
                   <SidebarMenuButton
                     tooltip={item.title}
                     asChild
-                    onClick={() => {
-                      if(item.title === "Bots") {
-                        setPeriodSelectorActive(false)
-                      } else {
-                        setPeriodSelectorActive(true)
-                      }
-                      setHeader(item.title)
-                    }}
                     className={isActive ? "bg-primary text-white hover:bg-primary hover:text-white" : "hover:bg-muted hover:text-foreground"}
                   >
                     <div className="flex items-center gap-2">

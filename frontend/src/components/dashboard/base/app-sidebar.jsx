@@ -2,11 +2,13 @@ import * as React from "react"
 import {
   IconChartBar,
   IconDashboard,
-  IconRobot
+  IconRobot,
+  IconSettings
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/dashboard/base/nav-main"
 import { NavUser } from "@/components/dashboard/base/nav-user"
+import { NavSecondary } from "@/components/dashboard/base/nav-secondary"
 import {
   Sidebar,
   SidebarContent,
@@ -26,6 +28,13 @@ const data = {
     { title: "Analytics", url: "/dashboard/analytics", icon: IconChartBar },
     { title: "Bots", url: "/dashboard/bots", icon: IconRobot },
   ],
+  navSecondary: [
+    {
+      title: "Settings",
+      url: "#",
+      icon: IconSettings,
+    }
+  ],
 }
 
 export function AppSidebar(props) {
@@ -39,7 +48,8 @@ export function AppSidebar(props) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} setHeader={props.headerText} setPeriodSelectorActive={props.setPeriodSelectorActive}  />
+        <NavMain items={data.navMain} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
     </Sidebar>
   )

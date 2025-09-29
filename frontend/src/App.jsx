@@ -4,7 +4,7 @@ import Signin from "./pages/Signin.jsx"
 import SignUp from "./pages/SignUp.jsx"
 import Dashboard from "./pages/Dashboard"
 import DashboardOverview from "@/components/dashboard/overview/dashboard-overview.jsx"
-import DataTable from "@/components/dashboard/bots/data-table"
+import BotsDataTable from "@/components/dashboard/bots/bots-data-table"
 
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
           <Route index element={<DashboardOverview />} />
           <Route path="overview" element={<DashboardOverview />} />
           <Route path="analytics" element={<></>} />
-          <Route path="bots" element={<DataTable/>} />
+          <Route path="bots" element={<BotsDataTable/>} />
         </Route>
       </Routes>
   )
