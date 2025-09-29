@@ -122,7 +122,7 @@ export function SigninForm({ className, ...props }) {
               disabled={loading}
               style={{ backgroundColor: "var(--us-color-green)" }}
             >
-              {loading ? <><Loader2Icon className="animate-spin" /> Loggin in...</> : "Login"}
+              {loading ? <><Loader2Icon className="animate-spin" /> Loggin in...</> : <>Login</>}
             </Button>
             <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
