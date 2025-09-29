@@ -51,8 +51,7 @@ export function SignUpForm({ className, ...props }) {
 
     setLoading(true)
     try {
-      // 🔧 Пример запроса на backend (можно заменить на твой API)
-      const res = await fetch("http://localhost:4000/api/signup", {
+      const res = await fetch("http://localhost:8080/api/auth/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,6 +60,7 @@ export function SignUpForm({ className, ...props }) {
       })
 
       if (!res.ok) {
+        console.log("❌ Login failed")
         throw new Error("Invalid email or password")
       }
 
