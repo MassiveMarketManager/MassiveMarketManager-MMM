@@ -1,4 +1,4 @@
-import * as React from "react"
+import {useState}from "react"
 import {
   flexRender,
   getCoreRowModel,
@@ -9,55 +9,63 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { IconDotsVertical, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react"
+import { IconDotsVertical, 
+  IconChevronLeft, 
+  IconChevronRight, 
+  IconChevronsLeft, 
+  IconChevronsRight,
+  IconPencil, 
+  IconTrash 
+ } from "@tabler/icons-react"
 
+export function StrategyTable({data, onDelete, onEdit}) {
+  const [sorting, setSorting] = useState([])
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 })
 
-
-const strategyColumns = [
-  { accessorKey: "name", header: "Strategy"},
-  { accessorKey: "lossLimit", 
-    header: "Loss Limit",
-    cell: ({ row }) => {
-      return (
-        <span >
-          {Number(row.original.lossLimit)*100 + "%"}
-        </span>
-      )
-    },
-   },
-  { accessorKey: "incomeLimit", 
-    header: "Income Limit",
-    cell: ({ row }) => {
-      return (
-        <span >
-          {Number(row.original.incomeLimit)*100 + "%"}
-        </span>
-      )
-    },
- },
+  const strategyColumns = [
+    { accessorKey: "name", header: "Strategy"},
+    { accessorKey: "lossLimit", 
+      header: "Loss Limit",
+      cell: ({ row }) => {
+        return (
+          <span >
+            {Number(row.original.lossLimit)*100 + "%"}
+          </span>
+        )
+      },
+     },
+    { accessorKey: "incomeLimit", 
+      header: "Income Limit",
+      cell: ({ row }) => {
+        return (
+          <span >
+            {Number(row.original.incomeLimit)*100 + "%"}
+          </span>
+        )
+      },
+  },
   { accessorKey: "potentialIncomeLimit", 
-    header: "Potential Income Limit",
-    cell: ({ row }) => {
-      return (
-        <span>
-          {Number(row.original.potentialIncomeLimit)*100 + "%"}
-        </span>
-      )
-    },
- },
+      header: "Potential Income Limit",
+      cell: ({ row }) => {
+        return (
+          <span>
+            {Number(row.original.potentialIncomeLimit)*100 + "%"}
+          </span>
+        )
+      },
+  },
   { accessorKey: "recheckPeriod", 
-    header: "Recheck Period",
-    cell: ({ row }) => {
-      return (
-        <span>
-          {row.original.recheckPeriod + "h"}
-        </span>
-      )
-    },
- },
+      header: "Recheck Period",
+      cell: ({ row }) => {
+        return (
+          <span>
+            {row.original.recheckPeriod + "h"}
+          </span>
+        )
+      },
+  },
   {
     accessorKey: "performance",
     header: "Performance",
@@ -72,7 +80,7 @@ const strategyColumns = [
   },
   {
     id: "actions",
-    cell: () => (
+    cell: ({row}) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="flex size-8 text-muted-foreground" size="icon">
@@ -80,18 +88,17 @@ const strategyColumns = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onEdit(row.original)}>
+            <IconPencil className="h-4 w-4" />Edit</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Delete</DropdownMenuItem>
+          <DropdownMenuItem onClick={onDelete}>
+            <IconTrash className="h-4 w-4 text-red-500" />Delete</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
   },
 ]
 
-export function StrategyTable({data}) {
-  const [sorting, setSorting] = React.useState([])
-  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 5 })
 
   const table = useReactTable({
     data: data,

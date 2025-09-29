@@ -6,73 +6,87 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { IconDotsVertical, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react"
+import { IconDotsVertical, 
+  IconChevronLeft, 
+  IconChevronRight, 
+  IconChevronsLeft, 
+  IconChevronsRight,
+  IconPencil, 
+  IconCash, 
+  IconPlus, 
+  IconPlayerStop 
+ } from "@tabler/icons-react"
 
-const botColumns = [
-  { accessorKey: "bot", header: "Bot" },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ getValue }) => {
-      const status = getValue()
-      return (
-        <Badge variant="secondary" className="flex items-center gap-2">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              status === "Running" ? "bg-green-500" : "bg-gray-400"
-            }`}
-          />
-          {status}
-        </Badge>
-      )
-    },
-  },
-  { accessorKey: "initial", header: "Initial Deposit" },
-  {
-    accessorKey: "profit",
-    header: "Profit/Loss",
-    cell: ({ getValue }) => {
-      const profit = getValue()
-      return (
-        <span
-          className="font-semibold"
-        >
-          {profit}
-        </span>
-      )
-    },
-  },
-  { accessorKey: "balance", header: "Balance" },
-  { accessorKey: "strategy", header: "Strategy" },
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex size-8 text-muted-foreground" size="icon">
-            <IconDotsVertical />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Payout</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Stop</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-]
 
-export function BotTable({data}) {
+export function BotTable({data, onStop, onEdit }) {
   const [sorting, setSorting] = React.useState([])
-  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 5 })
+  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 })
+
+  const botColumns = [
+    { accessorKey: "bot", header: "Bot" },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ getValue }) => {
+        const status = getValue()
+        return (
+          <Badge variant="secondary" className="flex items-center gap-2">
+            <span
+              className={`w-2 h-2 rounded-full ${
+                status === "Running" ? "bg-green-500" : "bg-gray-400"
+              }`}
+            />
+            {status}
+          </Badge>
+        )
+      },
+    },
+    { accessorKey: "initial", header: "Initial Deposit" },
+    {
+      accessorKey: "profit",
+      header: "Profit/Loss",
+      cell: ({ getValue }) => {
+        const profit = getValue()
+        return (
+          <span
+            className="font-semibold"
+          >
+            {profit}
+          </span>
+        )
+      },
+    },
+    { accessorKey: "balance", header: "Balance" },
+    { accessorKey: "strategy", header: "Strategy" },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="flex size-8 text-muted-foreground" size="icon">
+              <IconDotsVertical />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <DropdownMenuItem onClick={() => onEdit(row.original)}>
+              <IconPencil className=" h-4 w-4" />Edit</DropdownMenuItem>
+            <DropdownMenuItem><IconCash className=" h-4 w-4" />Payout</DropdownMenuItem>
+            <DropdownMenuItem><IconPlus className=" h-4 w-4" />Top up</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={onStop}>
+              <IconPlayerStop className=" h-4 w-4 text-red-500" />Stop</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ]
 
   const table = useReactTable({
     data: data,

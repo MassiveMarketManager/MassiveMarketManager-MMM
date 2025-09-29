@@ -1,17 +1,25 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowLeft } from "lucide-react"
 
-export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm }) {
+export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm, isEdit, data }) {
   const [name, setName] = useState("")
   const [lossLimit, setLossLimit] = useState("")
   const [incomeLimit, setIncomeLimit] = useState("")
   const [potentialIncomeLimit, setPotentialIncomeLimit] = useState("")
   const [recheckPeriod, setRecheckPeriod] = useState("")
-  const [autoSave, setAutoSave] = useState(true)
+
+  useEffect(() => {
+    if (isEdit && data) {
+      setName(data.name)
+      setLossLimit(data.lossLimit)
+      setIncomeLimit(data.incomeLimit)
+      setPotentialIncomeLimit(data.potentialIncomeLimit)
+      setRecheckPeriod(data.recheckPeriod)
+    }
+  }, [isEdit, data])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -20,14 +28,18 @@ export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm }) {
       lossLimit,
       incomeLimit,
       potentialIncomeLimit,
-      recheckPeriod,
-      autoSave
+      recheckPeriod
     })
   }
 
+  const isValid = name && (lossLimit && lossLimit > 0) && (incomeLimit && incomeLimit > 0) && (potentialIncomeLimit && potentialIncomeLimit > 0)&& (recheckPeriod && recheckPeriod > 0)
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid gap-3">
+        <p className="text-sm text-muted-foreground">
+                Define parameters for your new trading strategy.
+        </p>
+      <div className="grid gap-3 pt-3">
         <Label htmlFor="name">Strategy Name</Label>
         <Input
           id="name"
@@ -35,10 +47,13 @@ export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+        <p className="text-sm text-muted-foreground">
+                A unique name to identify this strategy.s
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-5">
-        <div className="grid gap-3">
+      <div className="grid grid-cols-2 gap-5 py-3">
+        <div className="grid gap-3 py-3">
           <Label htmlFor="loss">Loss Limit</Label>
           <Input
             id="loss"
@@ -46,9 +61,12 @@ export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm }) {
             value={lossLimit}
             onChange={(e) => setLossLimit(e.target.value)}
           />
+          <p className="text-sm text-muted-foreground">
+                Maximum allowed loss<br/> (e.g. 0.05 = 5%).
+        </p>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid gap-3 py-3">
           <Label htmlFor="income">Income Limit</Label>
           <Input
             id="income"
@@ -56,9 +74,12 @@ export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm }) {
             value={incomeLimit}
             onChange={(e) => setIncomeLimit(e.target.value)}
           />
+          <p className="text-sm text-muted-foreground">
+                Minimum profit target to <br/> close trades.
+        </p>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid gap-3 py-3">
           <Label htmlFor="potential">Potential Income Limit</Label>
           <Input
             id="potential"
@@ -66,9 +87,12 @@ export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm }) {
             value={potentialIncomeLimit}
             onChange={(e) => setPotentialIncomeLimit(e.target.value)}
           />
+          <p className="text-sm text-muted-foreground">
+                Potential profit to open a trade.<br/>(e.g. 0.002 = 0.2%).
+        </p>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid gap-3 py-3">
           <Label htmlFor="period">Recheck Period (min)</Label>
           <Input
             id="period"
@@ -76,43 +100,20 @@ export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm }) {
             value={recheckPeriod}
             onChange={(e) => setRecheckPeriod(e.target.value)}
           />
+          <p className="text-sm text-muted-foreground">
+                How often to recheck conditions (hours).
+        </p>
         </div>
       </div>
-
-        <Label
-          htmlFor="autoSave"
-          className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 
-                     has-[[aria-checked=true]]:border-blue-600 
-                     has-[[aria-checked=true]]:bg-blue-50 
-                     dark:has-[[aria-checked=true]]:border-blue-900 
-                     dark:has-[[aria-checked=true]]:bg-blue-950"
-        >
-          <Checkbox
-            id="autoSave"
-            checked={autoSave}
-            onCheckedChange={(checked) => setAutoSave(!!checked)}
-            className="data-[state=checked]:border-blue-600 
-                       data-[state=checked]:bg-blue-600 
-                       data-[state=checked]:text-white 
-                       dark:data-[state=checked]:border-blue-700 
-                       dark:data-[state=checked]:bg-blue-700"
-          />
-          <div className="grid gap-1.5 font-normal">
-            <p className="text-sm leading-none font-medium">Auto save</p>
-            <p className="text-muted-foreground text-sm">
-              This strategy will be saved for new bots.
-            </p>
-          </div>
-        </Label>
 
 
       <div className="flex justify-end gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
-            {isFromBotForm ? <div className="justify-start w-fit" ><ArrowLeft className="h-4 w-4 mr-1" /> Back</div> : <>Cancel</>}
+            {isFromBotForm ? <div className="justify-start" ><ArrowLeft className="h-4 w-4 mr-1" /> Back</div> : <>Cancel</>}
           </Button>
         )}
-        <Button type="submit">Create Strategy</Button>
+        <Button type="submit" disabled={!isValid}>Create Strategy</Button>
       </div>
     </form>
   )

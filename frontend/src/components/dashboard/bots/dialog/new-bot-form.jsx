@@ -19,13 +19,14 @@ import { Terminal } from "lucide-react"
 import { Plus } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 
-export function NewBotForm({ onSubmit, onCancel, onAddStrategy }) {
+export function NewBotForm({ onSubmit, onCancel, onAddStrategy, dataStrategy, models }) {
   const [pair, setPair] = useState("")
   const [initial, setInitial] = useState("")
   const [strategy, setStrategy] = useState("")
-   const [wallet, setWallet] = useState(null)
+  const [wallet, setWallet] = useState(null)
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState(null)
+  const [isStrategyOpen, setIsStrategyOpen] = useState(false)
 
   const connectWallet = async () => {
     if (!window.ethereum) {
@@ -53,17 +54,18 @@ export function NewBotForm({ onSubmit, onCancel, onAddStrategy }) {
           title: "Connection rejected",
           description: "You declined the wallet connection request.",
         })
-        setConnecting(false)
       } else {
         setError({
           title: "Error",
           description: err.message,
         })
-        setConnecting(false)
       }
+    } finally {
+      setConnecting(false)
     }
   }
   
+  const isValid = pair && (initial && initial > 0) && strategy && wallet
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -72,24 +74,33 @@ export function NewBotForm({ onSubmit, onCancel, onAddStrategy }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-       <div className="grid gap-3">
+        <p className="text-sm text-muted-foreground">
+                Fill in the fields to launch a new trading bot.
+        </p>
+       <div className="grid gap-3 py-3">
         <Label htmlFor="pair">Trading Pair</Label>
         <Select onValueChange={setPair}>
           <SelectTrigger id="pair" className="w-full h-10">
             <SelectValue placeholder="e.g. USDC/ETH" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="USDC/ETH">USDC/ETH</SelectItem>
-            <SelectItem value="USDT/WBTC">USDT/WBTC</SelectItem>
-            <SelectItem value="DAI/ETH">DAI/ETH</SelectItem>
-            <SelectItem value="ARB/USDC">ARB/USDC</SelectItem>
-            <SelectItem value="WBTC/ETH">WBTC/ETH</SelectItem>
+            {models.map((model) => (
+              <SelectItem key={model} value={model}>
+                {model}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
+        <p className="text-sm text-muted-foreground">
+                Choose the market pair for your bot.
+        </p>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid gap-3 pb-3">
         <Label htmlFor="initial">Initial Deposit</Label>
+        <p className="text-sm text-muted-foreground">
+                Enter how much you want to fund the bot with and connect your wallet.
+        </p>
         <div className="relative">
           <Input
             id="initial"
@@ -139,29 +150,33 @@ export function NewBotForm({ onSubmit, onCancel, onAddStrategy }) {
               )}
       </div>
 
-      <div className="grid gap-3">
+      <div className={`grid gap-3 pb-3 ${isStrategyOpen ? "pb-24" : ""}`}>
         <Label htmlFor="strategy">Strategy</Label>
-        <Select onValueChange={setStrategy}>
+        <Select onValueChange={setStrategy} onOpenChange={setIsStrategyOpen}>
           <SelectTrigger id="strategy" className="w-full h-10">
             <SelectValue placeholder="Choose strategy..." />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="strategy_101">strategy_101</SelectItem>
-            <SelectItem value="strategy_204">strategy_204</SelectItem>
-            <SelectItem value="strategy_309">strategy_309</SelectItem>
-            <SelectItem value="strategy_412">strategy_412</SelectItem>
+          <SelectContent side="bottom" position="popper" avoidCollisions={false}>
+            {dataStrategy.map((strategy) => (
+              <SelectItem key={strategy.id} value={strategy.name}>
+                {strategy.name}
+              </SelectItem>
+            ))}
 
             <Separator className="my-1"/>
             <Button
               type="button"
               variant="ghost" 
-              className="w-full flex items-center justify-center py-1.5 hover:bg-accent rounded-md"
+              className="w-full flex items-center justify-start py-1.5 hover:bg-accent rounded-md"
               onClick={onAddStrategy}
               >
               <Plus className="h-4 w-4" /> New Strategy
             </Button>
           </SelectContent>
         </Select>
+        <p className="text-sm text-muted-foreground">
+                Select or create a trading strategy.
+        </p>
       </div>
 
       <div className="flex justify-end gap-2">
@@ -170,7 +185,7 @@ export function NewBotForm({ onSubmit, onCancel, onAddStrategy }) {
             Cancel
           </Button>
         )}
-        <Button type="submit">Create</Button>
+        <Button type="submit" disabled={!isValid}>Create</Button>
       </div>
     </form>
   )
