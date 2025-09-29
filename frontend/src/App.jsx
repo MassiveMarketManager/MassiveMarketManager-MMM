@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard.jsx"
 import CheckEmailPage from './pages/CheckEmailPage.jsx'
 import VerifyEmailPage from './pages/VerifyEmailPage'
 import DashboardOverview from "@/components/dashboard/overview/dashboard-overview.jsx"
-import BotsDataTable from "@/components/dashboard/bots/bots-data-table"
+import DashboardBots from "@/components/dashboard/bots/dashboard-bots"
 
 
 function App() {
@@ -15,14 +15,14 @@ function App() {
         <Route path="/" element={<Navigate to="/auth/sign-in" />} />
         <Route path="/auth/sign-in" element={<Signin />} />
         <Route path="/auth/sign-up" element={<SignUp />} />
+        <Route path='/auth/check-email' element={<CheckEmailPage />} />
+        <Route path='/auth/verify' element={<VerifyEmailPage />} />
         <Route path="/dashboard" element={<Dashboard />} >
           <Route index element={<DashboardOverview />} />
           <Route path="overview" element={<DashboardOverview />} />
           <Route path="analytics" element={<></>} />
-          <Route path="bots" element={<BotsDataTable/>} />
+          <Route path="bots" element={<DashboardBots/>} />
         </Route>
-        <Route path='/auth/check-email' element={<CheckEmailPage />} />
-        <Route path='/auth/verify' element={<VerifyEmailPage />} />
       </Routes>
   )
 }

@@ -8,6 +8,9 @@ import {
 import { NewBotForm } from "./new-bot-form"
 import { NewStrategyForm } from "./new-strategy-form"
 import { MessageForm } from "./message-form"
+import { EditBotForm } from "./edit-bot-form"
+import { TopUpForm } from "./topup-form"
+import { WithdrawForm } from "./withdraw-form"
 
 /*const dialogForms = {
   bots: {
@@ -57,18 +60,23 @@ export function UniversalDialog({
   dataStrategy,
   handleNewStrategy,
   handleNewBot,
+  handleUpdateBot,
+  handleUpdateStartegy,
+  handleTopUpBot,
+  handleWithdrawBot,
+  handleStopRunBot,
+  handleDeleteStrategy,
   models,
   open, 
   onOpenChange, 
   mode: initialMode, 
   action: initialAction,
-  selectedBotForEdit,
-  selectedStrategyForEdit }) {
+  selectedBot,
+  selectedStrategy }) {
 
   const [mode, setMode] = useState(initialMode)
   const [action, setAction] = useState(initialAction)
 
-  // синхронизируем при открытии
   useEffect(() => {
     if (open) {
       setMode(initialMode)
@@ -76,19 +84,9 @@ export function UniversalDialog({
     }
   }, [open, initialMode, initialAction])
 
-  const handleNewBotSubmit = (data) => {
-    handleNewBot(data)
-    onOpenChange(false)
-  }
-
   const handleStrategyFromBotSubmit = (strategy) => {
     handleNewStrategy(strategy)
     setMode("bots") 
-  }
-
-  const handleStrategySubmit = (strategy) => {
-    handleNewStrategy(strategy)
-    onOpenChange(false) 
   }
 
   const forms = {
@@ -97,7 +95,7 @@ export function UniversalDialog({
         title: "Create New Bot",
         component: (
           <NewBotForm 
-              onSubmit={handleNewBotSubmit} 
+              onSubmit={handleNewBot} 
               onCancel={() => onOpenChange(false)}
               dataStrategy={dataStrategy}
               models={models}
@@ -117,18 +115,47 @@ export function UniversalDialog({
       destructive: {
         title: "Stop this Bot",
         component: (<MessageForm
-              onSubmit={()=>{}}
+              onSubmit={() => {
+                handleStopRunBot(selectedBot)
+                onOpenChange(false)
+              }}
               onCancel={() => onOpenChange(false) }
               text="Are you sure you want to stop this bot? It will stop trading immediately but your funds remain safe."
               submitButtonText="Stop"
             />),
+      },
+      edit: {
+        title: "Edit this Bot",
+        component: (<EditBotForm
+          bot={selectedBot}
+          dataStrategy={dataStrategy}
+          onSubmit={handleUpdateBot}
+          onCancel={() => onOpenChange(false)}
+          setAction={setAction}
+        />)
+      },
+      topup: {
+        title: "Top up Bot",
+        component:(<TopUpForm 
+          bot={selectedBot}
+          onSubmit={handleTopUpBot}
+          onCancel={() => onOpenChange(false)} 
+        />)
+      },
+      withdraw: {
+        title: "Withdraw from Bot",
+        component:(<WithdrawForm
+          bot={selectedBot}
+          onSubmit={handleWithdrawBot}
+          onCancel={() => onOpenChange(false)}
+           />)
       }
     },
     strategies: {
       new: {
         title: "Create New Strategy",
         component: (<NewStrategyForm
-              onSubmit={handleStrategySubmit}
+              onSubmit={handleNewStrategy}
               onCancel={() => onOpenChange(false)}
               isFromBotForm={false}
               isEdit={false}
@@ -137,17 +164,20 @@ export function UniversalDialog({
       edit: {
         title: "Edit this Strategy",
         component: (<NewStrategyForm
-              onSubmit={() => {}}
+              onSubmit={handleUpdateStartegy}
               onCancel={() => onOpenChange(false)}
               isFromBotForm={false}
               isEdit={true}
-              data={selectedStrategyForEdit}
+              data={selectedStrategy}
           />),
       },
       destructive: {
         title: "Delete this Strategy",
         component: (<MessageForm
-              onSubmit={()=>{}}
+              onSubmit={() => {
+                handleDeleteStrategy(selectedStrategy)
+                onOpenChange(false)
+              }}
               onCancel={() => onOpenChange(false)}
               text="Are you sure you want to delete this strategy? This action cannot be undone."
               submitButtonText="Delete"
@@ -163,14 +193,14 @@ export function UniversalDialog({
   const FormComponent = formConfig.component
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {formConfig.title}
-          </DialogTitle>
+    <Dialog open={open} onOpenChange={onOpenChange} >
+      <DialogContent className="max-h-[90vh] flex flex-col">
+        <DialogHeader className="shrink-0">
+          <DialogTitle>{formConfig.title}</DialogTitle>
         </DialogHeader>
-        {FormComponent}
+        <div className="overflow-y-auto pr-2 -mr-2">
+          {FormComponent}
+        </div>
       </DialogContent>
     </Dialog>
   )

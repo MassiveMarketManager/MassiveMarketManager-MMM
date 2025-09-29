@@ -9,7 +9,7 @@ import { Outlet, useLocation  } from "react-router-dom"
 export default function Dashboard() {
 
   const location = useLocation()
-
+ 
   const getHeaderConfig = (path) => {
     switch (path) {
       case "/dashboard/overview":

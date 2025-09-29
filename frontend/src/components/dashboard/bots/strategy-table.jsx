@@ -20,7 +20,7 @@ import { IconDotsVertical,
   IconTrash 
  } from "@tabler/icons-react"
 
-export function StrategyTable({data, onDelete, onEdit}) {
+export function StrategyTable({data, openDialog, onSelect}) {
   const [sorting, setSorting] = useState([])
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 })
 
@@ -88,10 +88,13 @@ export function StrategyTable({data, onDelete, onEdit}) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem onClick={() => onEdit(row.original)}>
+          <DropdownMenuItem onClick={() => onSelect(row.original, "edit")}>
             <IconPencil className="h-4 w-4" />Edit</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={onDelete}>
+          <DropdownMenuItem onClick={() => {
+              onSelect(row.original, "destructive")
+              openDialog(true)
+          }}>
             <IconTrash className="h-4 w-4 text-red-500" />Delete</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

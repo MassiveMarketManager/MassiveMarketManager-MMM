@@ -23,9 +23,10 @@ import { IconDotsVertical,
   IconPlus, 
   IconPlayerStop 
  } from "@tabler/icons-react"
+ import { Play } from "lucide-react"
 
 
-export function BotTable({data, onStop, onEdit }) {
+export function BotTable({data, openDialog, onRun, onSelect }) {
   const [sorting, setSorting] = React.useState([])
   const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 })
 
@@ -75,13 +76,21 @@ export function BotTable({data, onStop, onEdit }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem onClick={() => onEdit(row.original)}>
+            <DropdownMenuItem onClick={() => onSelect(row.original, "edit")}>
               <IconPencil className=" h-4 w-4" />Edit</DropdownMenuItem>
-            <DropdownMenuItem><IconCash className=" h-4 w-4" />Payout</DropdownMenuItem>
-            <DropdownMenuItem><IconPlus className=" h-4 w-4" />Top up</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSelect(row.original, "withdraw")}><IconCash className=" h-4 w-4" />Withdraw</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSelect(row.original, "topup")}><IconPlus className=" h-4 w-4" />Top up</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onStop}>
-              <IconPlayerStop className=" h-4 w-4 text-red-500" />Stop</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+                if (row.original.status === "Running") {
+                  openDialog(true)
+                  onSelect(row.original, "destructive")
+                } else {
+                  onRun(row.original)
+                }
+              }}>
+              {row.original.status === "Running" ? <><IconPlayerStop className=" h-4 w-4 text-red-500" />Stop</> : <><Play className="h-4 w-4 text-green-500" />Run</>}
+              </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),

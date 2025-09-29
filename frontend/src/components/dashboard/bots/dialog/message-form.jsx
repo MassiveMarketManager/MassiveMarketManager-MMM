@@ -6,6 +6,7 @@ export function MessageForm({ onSubmit, onCancel, text,submitButtonText }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     onSubmit()
+    onCancel()
   }
 
   return (

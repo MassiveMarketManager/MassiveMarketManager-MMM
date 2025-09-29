@@ -30,6 +30,7 @@ export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm, isEdit, dat
       potentialIncomeLimit,
       recheckPeriod
     })
+    onCancel()
   }
 
   const isValid = name && (lossLimit && lossLimit > 0) && (incomeLimit && incomeLimit > 0) && (potentialIncomeLimit && potentialIncomeLimit > 0)&& (recheckPeriod && recheckPeriod > 0)
@@ -113,7 +114,7 @@ export function NewStrategyForm({ onSubmit, onCancel, isFromBotForm, isEdit, dat
             {isFromBotForm ? <div className="justify-start" ><ArrowLeft className="h-4 w-4 mr-1" /> Back</div> : <>Cancel</>}
           </Button>
         )}
-        <Button type="submit" disabled={!isValid}>Create Strategy</Button>
+        <Button type="submit" disabled={!isValid}>{isEdit ? <>Save Changes</> : <>Create Strategy</>}</Button>
       </div>
     </form>
   )

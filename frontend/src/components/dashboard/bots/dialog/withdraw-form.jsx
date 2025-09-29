@@ -3,30 +3,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   Alert,
   AlertTitle,
   AlertDescription,
 } from "@/components/ui/alert"
-import { Loader2Icon } from "lucide-react"
-import { Terminal } from "lucide-react"
-import { Plus } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
+import { Loader2Icon, Terminal } from "lucide-react"
 
-export function NewBotForm({ onSubmit, onCancel, onAddStrategy, dataStrategy, models }) {
-  const [pair, setPair] = useState("")
-  const [initial, setInitial] = useState("")
-  const [strategy, setStrategy] = useState("")
+export function WithdrawForm({ bot, onSubmit, onCancel }) {
+  const [amount, setAmount] = useState("")
   const [wallet, setWallet] = useState(null)
-  const [connecting, setConnecting] = useState(false);
+  const [connecting, setConnecting] = useState(false)
   const [error, setError] = useState(null)
-  const [isStrategyOpen, setIsStrategyOpen] = useState(false)
 
   const connectWallet = async () => {
     if (!window.ethereum) {
@@ -44,10 +31,7 @@ export function NewBotForm({ onSubmit, onCancel, onAddStrategy, dataStrategy, mo
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       })
-      console.log("✅ Accounts:", accounts)
-      
       setWallet(accounts[0])
-      console.log("✅ Connected:", accounts[0])
     } catch (err) {
       if (err.code === 4001) {
         setError({
@@ -64,50 +48,39 @@ export function NewBotForm({ onSubmit, onCancel, onAddStrategy, dataStrategy, mo
       setConnecting(false)
     }
   }
-  
-  const isValid = pair && (initial && initial > 0) && strategy && wallet
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onSubmit({ pair, initial, strategy })
+    onSubmit({ botId: bot.id, amount })
     onCancel()
   }
 
+  const isValid = amount && amount > 0
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-                Fill in the fields to launch a new trading bot.
-        </p>
-       <div className="grid gap-3 py-3">
-        <Label htmlFor="pair">Trading Pair</Label>
-        <Select onValueChange={setPair}>
-          <SelectTrigger id="pair" className="w-full h-10">
-            <SelectValue placeholder="e.g. USDC/ETH" />
-          </SelectTrigger>
-          <SelectContent>
-            {models.map((model) => (
-              <SelectItem key={model} value={model}>
-                {model}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <p className="text-sm text-muted-foreground">
-                Choose the market pair for your bot.
-        </p>
-      </div>
+      <p className="text-sm text-muted-foreground">
+        Withdraw funds from your bot’s balance back to your wallet.
+      </p>
+
+      <div className="p-3 rounded-md border bg-muted/20 flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Current Balance</span>
+            <span className="text-base font-semibold">{bot.balance}</span>
+        </div>
 
       <div className="grid gap-3 pb-3">
-        <Label htmlFor="initial">Initial Deposit</Label>
+        <Label htmlFor="initial">Amount</Label>
         <p className="text-sm text-muted-foreground">
-                Enter how much you want to fund the bot with and connect your wallet.
+                Enter the amount you want to withdraw.
         </p>
+        
+
         <div className="relative">
           <Input
             id="initial"
             placeholder="500"
-            value={initial}
-            onChange={(e) => setInitial(e.target.value)}
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
             className="pr-16"
           />
           <span className="absolute inset-y-0 right-3 flex items-center text-sm text-muted-foreground">
@@ -151,42 +124,13 @@ export function NewBotForm({ onSubmit, onCancel, onAddStrategy, dataStrategy, mo
               )}
       </div>
 
-      <div className={`grid gap-3 pb-3 ${isStrategyOpen ? "pb-24" : ""}`}>
-        <Label htmlFor="strategy">Strategy</Label>
-        <Select onValueChange={setStrategy} onOpenChange={setIsStrategyOpen}>
-          <SelectTrigger id="strategy" className="w-full h-10">
-            <SelectValue placeholder="Choose strategy..." />
-          </SelectTrigger>
-          <SelectContent side="bottom" position="popper" avoidCollisions={false}>
-            {dataStrategy.map((strategy) => (
-              <SelectItem key={strategy.id} value={strategy.name}>
-                {strategy.name}
-              </SelectItem>
-            ))}
-
-            <Separator className="my-1"/>
-            <Button
-              type="button"
-              variant="ghost" 
-              className="w-full flex items-center justify-start py-1.5 hover:bg-accent rounded-md"
-              onClick={onAddStrategy}
-              >
-              <Plus className="h-4 w-4" /> New Strategy
-            </Button>
-          </SelectContent>
-        </Select>
-        <p className="text-sm text-muted-foreground">
-                Select or create a trading strategy.
-        </p>
-      </div>
-
       <div className="flex justify-end gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
         )}
-        <Button type="submit" disabled={!isValid}>Create</Button>
+        <Button type="submit" variant="destructive" disabled={!isValid}>Withdraw</Button>
       </div>
     </form>
   )
