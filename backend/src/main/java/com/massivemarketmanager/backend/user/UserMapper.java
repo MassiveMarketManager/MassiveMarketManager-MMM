@@ -21,6 +21,15 @@ public interface UserMapper {
     @Mapping(target = "role",   source = "role")
     UserSummaryDto toSummaryDto(User user);
 
+    // Request DTO -> Entity
+    User toEntity(UserRequestDto userRequestDto);
+
+    // Entity -> Response DTO
+    @Mapping(target = "id",     source = "id")
+    @Mapping(target = "email",  source = "email", qualifiedByName = "normalizeEmail")
+    @Mapping(target = "role",   source = "role")
+    UserResponseDto toResponseDto(User user);
+
     // Collections
     List<UserSummaryDto> toSummaryList(Collection<User> users);
 
