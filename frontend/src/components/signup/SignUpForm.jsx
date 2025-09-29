@@ -19,6 +19,8 @@ import {
 import { Terminal } from "lucide-react"
 import { Eye, EyeOff } from "lucide-react"
 
+import { useNavigate } from "react-router-dom"
+
 export function SignUpForm({ className, ...props }) {
   const [email, setEmail] = useState("")
   const [password1, setPassword1] = useState("")
@@ -28,57 +30,82 @@ export function SignUpForm({ className, ...props }) {
   const [showPassword1, setShowPassword1] = useState(false)
   const [showPassword2, setShowPassword2] = useState(false)
 
+  const navigate = useNavigate()
+
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
+
+    const emailNorm = (email || '').trim()
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!emailNorm || !emailRe.test(emailNorm)) {
+      setError({
+        title: 'Invalid email',
+        description: 'Please enter a valid email address.',
+      })
+      return
+    }
 
     if (password1 !== password2) {
       setError({
         title: "Passwords do not match",
         description: "Please make sure both passwords are the same.",
-      })
-      return
+      });
+      return;
     }
 
-    if (password1.length < 8  || password2.length < 8 ) {
+    if (password1.length < 8 || password2.length < 8) {
       setError({
         title: "Password is too short",
         description: "Please make sure both passwords are at least 8 characters long.",
-      })
-      return
+      });
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:8080/api/auth/sign-up", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password: password1, confirmPassword: password2 }),
-      })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: emailNorm,
+          password: password1,
+        }),
+      });
+
+      const isJson = res.headers.get("content-type")?.includes("application/json");
+      const payload = isJson ? await res.json() : await res.text();
 
       if (!res.ok) {
-        console.log("❌ Login failed")
-        throw new Error("Invalid email or password")
+        console.log("Error payload:", payload);
+        let msg = typeof payload === "string" ? payload : "";
+        if (!msg && payload && typeof payload === "object") {
+          if (payload.detail) msg = payload.detail;
+          else if (payload.message) msg = payload.message;
+          else if (Array.isArray(payload.errors) && payload.errors.length) {
+            msg = payload.errors
+              .map(e => e.defaultMessage || e.message || `${e.field || "field"} invalid`)
+              .slice(0, 2)
+              .join("; ");
+          }
+        }
+        throw new Error(msg || `HTTP ${res.status}`);
       }
 
-      const data = await res.json()
-      console.log("✅ Signned up:", data)
-
-      // тут можно сохранить токен в localStorage или context
-      localStorage.setItem("token", data.token)
+      navigate(`/auth/check-email?email=${encodeURIComponent(emailNorm)}`)
 
     } catch (err) {
       setError({
         title: "Registration failed",
-        description: err.message,
-      })
+        description: err?.message || "Unexpected error",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
 
 
   return (
