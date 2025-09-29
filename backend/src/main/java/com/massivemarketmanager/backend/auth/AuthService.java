@@ -1,10 +1,9 @@
 package com.massivemarketmanager.backend.auth;
 
-import com.massivemarketmanager.backend.user.UserMapper;
-import com.massivemarketmanager.backend.user.UserRepository;
-import com.massivemarketmanager.backend.user.UserResponseDto;
-import com.massivemarketmanager.backend.user.UserSummaryDto;
+import com.massivemarketmanager.backend.user.*;
+import jakarta.mail.MessagingException;
 import jakarta.security.auth.message.AuthException;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +28,35 @@ public class AuthService {
 
     private final TokenService tokenService;
 
-    public UserResponseDto register(@Valid SignUpRequestDto request) {
-        return null;
+    private final VerificationService verificationService;
+
+    private final MailService mailService;
+
+    @Transactional
+    public UserResponseDto register(@Valid SignUpRequestDto request) throws AuthException, MessagingException {
+        final String email = normalizeEmail(request.email());
+        final String rawPassword = request.password() == null ? "" : request.password();
+
+        var userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            throw new AuthException("USER_ALREADY_EXISTS");
+        }
+
+        UserRequestDto userRequestDto = new UserRequestDto(request.email(), passwordEncoder.encode(rawPassword));
+
+        var user = userMapper.toEntity(userRequestDto);
+        userRepository.save(user);
+
+        String token = verificationService.issueToken(user);
+        mailService.sendEmailVerification(user.getEmail(), token);
+
+        return userMapper.toResponseDto(user);
     }
 
-    public void verifyEmail(@NotBlank String token) {
-    }
-    public void resendVerification(@NotBlank String email) {
-    }
+    public void verifyEmail(@NotBlank String token) {}
+
+    public void resendVerification(@NotBlank String email) {}
+
     public AuthResponseDto signIn(@Valid SignInRequestDto request) throws AuthException {
         final String email = normalizeEmail(request.email());
         final String rawPassword = request.password() == null ? "" : request.password();
