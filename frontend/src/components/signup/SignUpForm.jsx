@@ -106,6 +106,8 @@ export function SignUpForm({ className, ...props }) {
     }
   };
 
+  const isValid = email && password1 && password2 && password1 === password2
+
 
 
   return (
@@ -196,7 +198,7 @@ export function SignUpForm({ className, ...props }) {
             <Button
               type="submit"
               className="w-full"
-              disabled={loading}
+              disabled={!isValid || loading}
               style={{ backgroundColor: "var(--us-color-green)" }}
             >
               {loading ? <><Loader2Icon className="animate-spin" /> Creating account...</> : "Sign Up"}

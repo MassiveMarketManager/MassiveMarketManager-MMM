@@ -63,6 +63,8 @@ export function SigninForm({ className, ...props }) {
     }
   }
 
+  const isValid = email && password
+
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -119,7 +121,7 @@ export function SigninForm({ className, ...props }) {
             <Button
               type="submit"
               className="w-full"
-              disabled={loading}
+              disabled={!isValid || loading}
               style={{ backgroundColor: "var(--us-color-green)" }}
             >
               {loading ? <><Loader2Icon className="animate-spin" /> Loggin in...</> : <>Login</>}
