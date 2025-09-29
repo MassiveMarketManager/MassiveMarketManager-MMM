@@ -88,6 +88,7 @@ services:
       SPRING_CLOUD_VAULT_APPLICATION_NAME: app
       # fail fast, чтобы падать с понятной ошибкой
       SPRING_CLOUD_VAULT_FAIL_FAST: "true"
+      JWT_SECRET: ${JWT_SECRET}
     ports: [ "${APP_PORT:-8080}:8080" ]
     networks: [ "backend_mmm_net" ]
 
