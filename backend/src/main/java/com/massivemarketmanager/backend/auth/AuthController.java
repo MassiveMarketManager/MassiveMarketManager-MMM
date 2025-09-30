@@ -2,6 +2,7 @@ package com.massivemarketmanager.backend.auth;
 
 
 import com.massivemarketmanager.backend.user.UserResponseDto;
+import jakarta.mail.MessagingException;
 import jakarta.security.auth.message.AuthException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto request,
-                                                  UriComponentsBuilder uriBuilder) throws AuthException{
+                                                  UriComponentsBuilder uriBuilder) throws AuthException, MessagingException {
         UserResponseDto user = authService.register(request);
         URI location = uriBuilder.path("/users/{id}").buildAndExpand(user.id()).toUri();
         return ResponseEntity.created(location).body(user);
