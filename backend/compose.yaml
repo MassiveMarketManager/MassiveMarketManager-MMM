@@ -77,7 +77,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-mmm}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-mmm}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-mmm}
-      SERVER_PORT: 8080
+      SERVER_PORT: 9000
       TZ: ${TZ:-UTC}
       # Spring Cloud Vault
       SPRING_CONFIG_IMPORT: "vault://"
@@ -89,7 +89,7 @@ services:
       # fail fast, чтобы падать с понятной ошибкой
       SPRING_CLOUD_VAULT_FAIL_FAST: "true"
       JWT_SECRET: ${JWT_SECRET}
-    ports: [ "${APP_PORT:-8080}:8080" ]
+    ports: [ "${APP_PORT:-9000}:9000" ]
     networks: [ "backend_mmm_net" ]
 
   # -------- PROD --------
@@ -131,7 +131,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-mmm}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-mmm}
       SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
-      SERVER_PORT: 8080
+      SERVER_PORT: 9000
       TZ: ${TZ:-UTC}
       SPRING_CONFIG_IMPORT: "vault://"
       SPRING_CLOUD_VAULT_URI: http://vault:8200
@@ -139,7 +139,7 @@ services:
       SPRING_CLOUD_VAULT_KV_ENABLED: "true"
       SPRING_CLOUD_VAULT_KV_BACKEND: secret
       SPRING_CLOUD_VAULT_APPLICATION_NAME: app
-    ports: ["${APP_PORT:-8080}:8080"]
+    ports: ["${APP_PORT:-9000}:9000"]
     networks: [backend_mmm_net]
 
 volumes:

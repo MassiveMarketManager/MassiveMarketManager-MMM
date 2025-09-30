@@ -27,5 +27,5 @@ COPY --from=build /app/target/*.jar /opt/app/app.jar
 # Container-aware JVM defaults
 ENV JAVA_TOOL_OPTIONS="-XX:+ExitOnOutOfMemoryError -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=25.0 -Dfile.encoding=UTF-8 -Duser.timezone=UTC"
 
-EXPOSE 8080
+EXPOSE 9000
 ENTRYPOINT ["java","-jar","/opt/app/app.jar"]
