@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule: { interval: "weekly" }
+    target-branch: "frontend/prod"
+    open-pull-requests-limit: 5
+    commit-message: { prefix: "chore(deps-frontend)" }
+
+  - package-ecosystem: "maven"
+    directory: "/backend"
+    schedule: { interval: "weekly" }
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    commit-message: { prefix: "chore(deps-backend)" }
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule: { interval: "weekly" }
+    target-branch: "main"
+    open-pull-requests-limit: 3
+    commit-message: { prefix: "chore(deps-docker)" }
