@@ -7,12 +7,13 @@ import CheckEmailPage from './pages/CheckEmailPage.jsx'
 import VerifyEmailPage from './pages/VerifyEmailPage'
 import DashboardOverview from "@/components/dashboard/overview/dashboard-overview.jsx"
 import DashboardBots from "@/components/dashboard/bots/dashboard-bots"
+import LandingPage from "./pages/LandingPage.jsx"
 
 
 function App() {
   return (
       <Routes>
-        <Route path="/" element={<Navigate to="/auth/sign-in" />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/auth/sign-in" element={<Signin />} />
         <Route path="/auth/sign-up" element={<SignUp />} />
         <Route path='/auth/check-email' element={<CheckEmailPage />} />
