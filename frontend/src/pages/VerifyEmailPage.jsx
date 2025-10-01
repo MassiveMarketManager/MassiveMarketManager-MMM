@@ -17,7 +17,7 @@ export default function VerifyEmailPage() {
       }
       try {
         // основной вариант: POST с JSON { token }
-        let res = await fetch('http://localhost:8080/api/auth/verify', {
+        let res = await fetch('https://massivemarketmanager.de/api/auth/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token }),
@@ -25,7 +25,7 @@ export default function VerifyEmailPage() {
 
         // запасной: если бэк ждёт query param
         if (!res.ok && res.status === 400) {
-          res = await fetch(`http://localhost:8080/api/auth/verify?token=${encodeURIComponent(token)}`, { method: 'POST' })
+          res = await fetch(`https://massivemarketmanager.de/api/auth/verify?token=${encodeURIComponent(token)}`, { method: 'POST' })
         }
 
         const isJson = res.headers.get('content-type')?.includes('application/json')

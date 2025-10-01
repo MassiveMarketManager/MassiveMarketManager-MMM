@@ -15,7 +15,7 @@ export default function CheckEmailPage() {
     setMsg(null)
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:8080/api/auth/resend-verification', {
+      const res = await fetch('https://massivemarketmanager.de/api/auth/resend-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

@@ -19,7 +19,10 @@ import {
 import { Terminal } from "lucide-react"
 import { Eye, EyeOff } from "lucide-react"
 
+import { useNavigate } from "react-router-dom"
+
 export function SigninForm({ className, ...props }) {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -34,7 +37,7 @@ export function SigninForm({ className, ...props }) {
     setLoading(true)
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/sign-in", {
+      const res = await fetch("https://massivemarketmanager.de/api/auth/sign-in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,6 +55,7 @@ export function SigninForm({ className, ...props }) {
 
       // тут можно сохранить токен в localStorage или context
       localStorage.setItem("token", data.token)
+      navigate("/dashboard/overview")
 
     } catch (err) {
       setError({
