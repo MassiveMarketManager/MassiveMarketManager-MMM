@@ -27,7 +27,7 @@ export default function SigninForm() {
     setLoading(true)
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/sign-in", {
+      const res = await fetch("https://massivemarketmanager.de/api/auth/sign-in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,6 +45,7 @@ export default function SigninForm() {
 
       // тут можно сохранить токен в localStorage или context
       localStorage.setItem("token", data.token)
+      navigate("/dashboard/overview")
 
     } catch (err) {
       toast.error("Login failed", {

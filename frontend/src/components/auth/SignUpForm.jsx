@@ -62,7 +62,7 @@ export default function SignUpForm() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/api/auth/sign-up", {
+      const res = await fetch("https://massivemarketmanager.de/api/auth/sign-up", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
