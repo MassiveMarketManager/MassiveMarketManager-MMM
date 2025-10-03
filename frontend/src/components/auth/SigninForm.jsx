@@ -10,27 +10,20 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
-import { Loader2Icon } from "lucide-react"
-import {
-  Alert,
-  AlertTitle,
-  AlertDescription,
-} from "@/components/ui/alert"
-import { Terminal } from "lucide-react"
-import { Eye, EyeOff } from "lucide-react"
+import { Loader2Icon, Eye, EyeOff, XCircle } from "lucide-react"
+import { toast } from "sonner"
+import { Toaster } from "@/components/ui/sonner"
 
-export function SigninForm({ className, ...props }) {
+export default function SigninForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
   
 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError(null)
     setLoading(true)
 
     try {
@@ -54,9 +47,10 @@ export function SigninForm({ className, ...props }) {
       localStorage.setItem("token", data.token)
 
     } catch (err) {
-      setError({
-        title: "Login failed",
+      toast.error("Login failed", {
         description: err.message,
+        position: "top-center",
+        icon: <XCircle className="h-5 w-5 text-red-500" />,
       })
     } finally {
       setLoading(false)
@@ -67,7 +61,8 @@ export function SigninForm({ className, ...props }) {
 
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6")}>
+      <Toaster />
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back, dude! </CardTitle>
@@ -77,13 +72,7 @@ export function SigninForm({ className, ...props }) {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            {error && (
-              <Alert variant="destructive" >
-                <Terminal className="h-4 w-4" />
-                <AlertTitle>{error.title}</AlertTitle>
-                <AlertDescription>{error.description}</AlertDescription>
-              </Alert>
-            )}
+            
             <div className="grid gap-3">
               <Label htmlFor="email">Email</Label>
               <Input
