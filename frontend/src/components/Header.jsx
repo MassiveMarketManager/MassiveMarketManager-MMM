@@ -1,71 +1,184 @@
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, Terminal } from "lucide-react"
+import { Menu, Terminal, Rocket, LogIn, Sun, Moon } from "lucide-react"
 import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { useTheme } from "@/components/theme-provider"
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
+  const navigate = useNavigate()
+  const { theme, setTheme } = useTheme()
 
   const navItems = [
-    { name: "Features", href: "#features" },
-    { name: "Technology", href: "#tech" },
-    { name: "Quick Start", href: "#start" },
-    { name: "Team", href: "#team" },
-    { name: "Roadmap", href: "#roadmap" }
+    { name: "Features", href: "features" },
+    { name: "Technology", href: "tech" },
+    { name: "Quick Start", href: "start" },
+    { name: "Team", href: "team" },
+    { name: "Roadmap", href: "roadmap" }
   ]
+
+  const handleAuthNavigation = (path) => {
+    navigate(path)
+    setIsOpen(false)
+  }
+
+  const toggleTheme = () => {
+    if (theme === "light") setTheme("dark")
+    else if (theme === "dark") setTheme("light")
+    else {
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      setTheme(systemDark ? "light" : "dark")
+    }
+  }
+
+  const smoothScrollTo = (hash, e) => {
+    e.preventDefault()
+    
+    if (window.location.pathname !== "/") {
+      navigate(`/#${hash}`)
+      setIsOpen(false)
+      return
+    }
+
+    const element = document.getElementById(hash)
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+      window.history.pushState(null, null, `/#${hash}`)
+    }
+    setIsOpen(false)
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 h-14 flex items-center">
-        <div className="flex items-center gap-2 mr-8">
-          <Terminal className="h-6 w-6" />
-          <span className="font-bold text-xl">MMM</span>
-        </div>
+      <div className="container mx-auto px-4 h-16 flex items-center">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2 mr-10">
+          <Terminal className="h-7 w-7 text-primary" />
+          <span className="font-bold text-2xl tracking-tight">MMM</span>
+        </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
-            <a
+            <button
               key={item.name}
-              href={item.href}
-              className="text-sm font-medium transition-colors hover:text-primary"
+              onClick={(e) => smoothScrollTo(item.href, e)}
+              className="text-base font-medium transition-colors hover:text-primary text-foreground/80 hover:text-foreground"
             >
               {item.name}
-            </a>
+            </button>
           ))}
         </nav>
 
+        {/* Desktop Auth Buttons */}
         <div className="flex items-center gap-4 ml-auto">
-          <Button variant="ghost" size="sm" className="hidden sm:flex">
+          {/* Desktop Theme Toggle Switch */}
+          <button
+            onClick={toggleTheme}
+            className="relative inline-flex h-8 w-14 items-center rounded-full bg-muted-foreground/20 transition-colors hover:bg-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            aria-label="Toggle theme"
+          >
+            <span className="sr-only">Toggle theme</span>
+            <span
+              className={`${
+                theme === "dark" ? "translate-x-7" : "translate-x-1"
+              } inline-block h-6 w-6 transform rounded-full bg-background shadow-lg transition-transform duration-200 ease-in-out`}
+            />
+            {/* Icons */}
+            <Sun className="absolute left-1.5 h-4 w-4 text-muted-foreground/70" />
+            <Moon className="absolute right-1.5 h-4 w-4 text-muted-foreground/70" />
+          </button>
+
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="hidden sm:flex gap-2 text-base font-medium"
+            onClick={() => navigate("/auth/sign-in")}
+          >
+            <LogIn className="h-4 w-4" />
             Sign In
           </Button>
-          <Button size="sm">
+          <Button 
+            size="sm" 
+            className="gap-2 text-base font-medium px-6"
+            onClick={() => navigate("/auth/sign-up")}
+          >
+            <Rocket className="h-4 w-4" />
             Get Started
           </Button>
 
-          {/* Mobile Navigation */}
+          {/* Mobile Navigation Trigger */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right">
-              <div className="flex flex-col gap-4 mt-8">
+            <SheetContent side="right" className="w-[85vw] max-w-md">
+              {/* Mobile Logo in Sheet */}
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 pb-6 border-b"
+                onClick={() => setIsOpen(false)}
+              >
+                <Terminal className="h-6 w-6 text-primary" />
+                <span className="font-bold text-xl">MMM</span>
+              </Link>
+              
+              {/* Mobile Navigation Items */}
+              <div className="flex flex-col gap-1 mt-8">
                 {navItems.map((item) => (
-                  <a
+                  <button
                     key={item.name}
-                    href={item.href}
-                    className="text-lg font-medium py-2"
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => smoothScrollTo(item.href, e)}
+                    className="text-lg font-medium py-3 px-4 rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground text-left"
                   >
                     {item.name}
-                  </a>
+                  </button>
                 ))}
-                <div className="flex flex-col gap-2 mt-4">
-                  <Button variant="outline">Sign In</Button>
-                  <Button>Get Started</Button>
+                
+                {/* Mobile Theme Toggle */}
+                <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-accent transition-colors">
+                  <span className="text-lg font-medium">Theme</span>
+                  <button
+                    onClick={toggleTheme}
+                    className="relative inline-flex h-8 w-14 items-center rounded-full bg-muted-foreground/20 transition-colors hover:bg-muted-foreground/30"
+                    aria-label="Toggle theme"
+                  >
+                    <span className="sr-only">Toggle theme</span>
+                    <span
+                      className={`${
+                        theme === "dark" ? "translate-x-7" : "translate-x-1"
+                      } inline-block h-6 w-6 transform rounded-full bg-background shadow-lg transition-transform duration-200 ease-in-out`}
+                    />
+                    <Sun className="absolute left-1.5 h-4 w-4 text-muted-foreground/70" />
+                    <Moon className="absolute right-1.5 h-4 w-4 text-muted-foreground/70" />
+                  </button>
                 </div>
+              </div>
+              
+              {/* Mobile Auth Buttons */}
+              <div className="flex flex-col gap-3 mt-8 pt-6 border-t">
+                <Button 
+                  variant="outline" 
+                  className="justify-center gap-2 text-base py-3 h-auto"
+                  onClick={() => handleAuthNavigation("/auth/sign-in")}
+                >
+                  <LogIn className="h-4 w-4" />
+                  Sign In
+                </Button>
+                <Button 
+                  className="justify-center gap-2 text-base py-3 h-auto"
+                  onClick={() => handleAuthNavigation("/auth/sign-up")}
+                >
+                  <Rocket className="h-4 w-4" />
+                  Get Started
+                </Button>
               </div>
             </SheetContent>
           </Sheet>
