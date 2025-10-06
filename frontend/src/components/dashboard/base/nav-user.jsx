@@ -2,7 +2,8 @@ import {
   IconLogout,
   IconSettings,
   IconUserCircle,
-  IconMoon 
+  IconMoon,
+  IconSun
 } from "@tabler/icons-react"
 
 import {
@@ -25,9 +26,23 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Moon, Sun } from "lucide-react"
+import { useTheme } from "@/components/theme-provider"
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar()
+
+  const { theme, setTheme } = useTheme()
+
+  const toggleTheme = () => {
+    if (theme === "light") setTheme("dark")
+    else if (theme === "dark") setTheme("light")
+    else {
+      // если "system" — определяем текущую системную и делаем наоборот
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      setTheme(systemDark ? "light" : "dark")
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -64,9 +79,12 @@ export function NavUser({ user }) {
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconMoon />
-                Drak Mode
+              <DropdownMenuItem onClick={toggleTheme}>
+                {theme === "dark" ? (
+                  <><IconSun />Light Mode</>
+                ) : (
+                  <><IconMoon />Dark Mode</>
+                )}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

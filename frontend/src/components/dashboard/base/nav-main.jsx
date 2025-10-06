@@ -22,7 +22,7 @@ export function NavMain({ items }) {
                   <SidebarMenuButton
                     tooltip={item.title}
                     asChild
-                    className={isActive ? "bg-primary text-white hover:bg-primary hover:text-white" : "hover:bg-muted hover:text-foreground"}
+                    className={isActive ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground" : "hover:bg-muted hover:text-foreground"}
                   >
                     <div className="flex items-center gap-2">
                       {item.icon && <item.icon className="w-5 h-5" />}
