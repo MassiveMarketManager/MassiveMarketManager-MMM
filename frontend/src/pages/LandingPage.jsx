@@ -3,7 +3,7 @@ import { Features } from "../components/landing/Features"
 import { TechStack } from "../components/landing/TechStack"
 import { QuickStart } from "../components/landing/QuickStart"
 import { Team } from "../components/landing/Team"
-import { Header } from "../components/Header"
+import { Header } from "../components/landing/Header"
 import { Architecture } from "../components/landing/Architecture"
 import { Roadmap } from "../components/landing/Roadmap"
 

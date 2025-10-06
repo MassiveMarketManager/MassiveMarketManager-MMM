@@ -3,12 +3,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, Terminal, Rocket, LogIn, Sun, Moon } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useTheme } from "@/components/theme-provider"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
-  const { theme, setTheme } = useTheme()
+  //const { theme, setTheme } = useTheme()
 
   const navItems = [
     { name: "Features", href: "features" },
@@ -23,14 +23,6 @@ export function Header() {
     setIsOpen(false)
   }
 
-  const toggleTheme = () => {
-    if (theme === "light") setTheme("dark")
-    else if (theme === "dark") setTheme("light")
-    else {
-      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-      setTheme(systemDark ? "light" : "dark")
-    }
-  }
 
   const smoothScrollTo = (hash, e) => {
     e.preventDefault()
@@ -77,21 +69,7 @@ export function Header() {
         {/* Desktop Auth Buttons */}
         <div className="flex items-center gap-4 ml-auto">
           {/* Desktop Theme Toggle Switch */}
-          <button
-            onClick={toggleTheme}
-            className="relative inline-flex h-8 w-14 items-center rounded-full bg-muted-foreground/20 transition-colors hover:bg-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            aria-label="Toggle theme"
-          >
-            <span className="sr-only">Toggle theme</span>
-            <span
-              className={`${
-                theme === "dark" ? "translate-x-7" : "translate-x-1"
-              } inline-block h-6 w-6 transform rounded-full bg-background shadow-lg transition-transform duration-200 ease-in-out`}
-            />
-            {/* Icons */}
-            <Sun className="absolute left-1.5 h-4 w-4 text-muted-foreground/70" />
-            <Moon className="absolute right-1.5 h-4 w-4 text-muted-foreground/70" />
-          </button>
+          <ThemeToggle/>
 
           <Button 
             variant="ghost" 
@@ -145,20 +123,7 @@ export function Header() {
                 {/* Mobile Theme Toggle */}
                 <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-accent transition-colors">
                   <span className="text-lg font-medium">Theme</span>
-                  <button
-                    onClick={toggleTheme}
-                    className="relative inline-flex h-8 w-14 items-center rounded-full bg-muted-foreground/20 transition-colors hover:bg-muted-foreground/30"
-                    aria-label="Toggle theme"
-                  >
-                    <span className="sr-only">Toggle theme</span>
-                    <span
-                      className={`${
-                        theme === "dark" ? "translate-x-7" : "translate-x-1"
-                      } inline-block h-6 w-6 transform rounded-full bg-background shadow-lg transition-transform duration-200 ease-in-out`}
-                    />
-                    <Sun className="absolute left-1.5 h-4 w-4 text-muted-foreground/70" />
-                    <Moon className="absolute right-1.5 h-4 w-4 text-muted-foreground/70" />
-                  </button>
+                  <ThemeToggle/>
                 </div>
               </div>
               
