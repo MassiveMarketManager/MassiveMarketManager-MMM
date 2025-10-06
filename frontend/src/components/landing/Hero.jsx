@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Brain, Shield, Zap, BarChart3 } from "lucide-react"
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 
 export function Hero() {
+  const navigate = useNavigate()
+  
   return (
     <section className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center max-w-6xl mx-auto px-4 py-20">
@@ -25,8 +29,13 @@ export function Hero() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <Button size="lg" className="gap-2 h-12 px-8">
-            Launch App <ArrowRight size={20} />
+          <Button 
+            size="lg"
+            className="gap-3 h-12 px-8 text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all hover:scale-105 hover:shadow-lg group"
+            onClick={() => navigate("/auth/sign-up")}
+          >
+            Launch App
+            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
           </Button>
           <Button size="lg" variant="outline" className="gap-2 h-12 px-8">
             <Brain size={20} />
