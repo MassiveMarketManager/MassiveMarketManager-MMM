@@ -120,3 +120,28 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @property --t {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  @keyframes orbit-ellipse {
+    to { --t: 360deg; }
+  }
+
+  .animate-orbit-ellipse {
+    animation: orbit-ellipse var(--duration, 20s) linear infinite;
+    transform:
+      translate(
+        calc(cos(calc(var(--t) + var(--phase, 0deg))) * var(--radius-x) * 1px),
+        calc(sin(calc(var(--t) + var(--phase, 0deg))) * var(--radius-y) * 1px)
+      );
+  }
+
+  [animation-direction="reverse"] {
+    animation-direction: reverse;
+  }
+}
