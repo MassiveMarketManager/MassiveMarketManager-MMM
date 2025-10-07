@@ -7,8 +7,22 @@ export function Hero() {
   const navigate = useNavigate()
   
   return (
-    <section className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center max-w-6xl mx-auto px-4 py-20">
+    <section className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+      <div className="text-center max-w-6xl mx-auto px-4 py-20 relative z-10">
+        {/* Background pulse */}
+        <div
+          className="
+            pointer-events-none absolute inset-0 -z-10
+            bg-[radial-gradient(60%_60%_at_50%_40%,rgba(255,255,255,0.08),transparent_60%)]
+            animate-pulse
+          "
+          style={{
+            animationDuration: '6s',
+            animationTimingFunction: 'ease-in-out',
+            animationIterationCount: 'infinite'
+          }}
+        />
+        
         {/* Badge */}
         <div className="flex justify-center mb-8">
           <div className="bg-muted px-4 py-2 rounded-full border">
@@ -18,10 +32,11 @@ export function Hero() {
         
         {/* Main Heading */}
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
-          MassiveMarket
-          <span className="text-primary">Manager</span>
+          <span className="bg-gradient-to-r from-zinc-100 via-zinc-400 to-zinc-100 bg-clip-text text-transparent">
+            MassiveMarketManager
+          </span>
         </h1>
-        
+
         <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
           Advanced AI trading system for decentralized finance. Machine learning models 
           and audited smart contracts for automated spot trading on leading L2 networks.
@@ -34,12 +49,12 @@ export function Hero() {
             className="gap-3 h-12 px-8 text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all hover:scale-105 hover:shadow-lg group"
             onClick={() => navigate("/auth/sign-up")}
           >
-            Launch App
+            Start AI Trading
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
           </Button>
           <Button size="lg" variant="outline" className="gap-2 h-12 px-8">
             <Brain size={20} />
-            Read Docs
+            See How It Works
           </Button>
         </div>
 
