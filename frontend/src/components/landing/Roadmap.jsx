@@ -17,7 +17,7 @@ export function Roadmap() {
     {
       phase: "Phase 2", 
       title: "Data & Analytics",
-      status: "completed",
+      status: "current",
       items: [
         "Market data ingestion pipeline",
         "Technical indicators calculation",
@@ -28,7 +28,7 @@ export function Roadmap() {
     {
       phase: "Phase 3",
       title: "ML/AI Integration", 
-      status: "current",
+      status: "upcoming",
       items: [
         "Machine learning model research",
         "Training pipeline development",
@@ -73,22 +73,25 @@ export function Roadmap() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "completed": return <CheckCircle className="w-5 h-5 text-green-500" />
-      case "current": return <Clock className="w-5 h-5 text-blue-500" />
+      case "completed": return <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400" />
+      case "current": return <Clock className="w-5 h-5 text-blue-500 dark:text-blue-400" />
       default: return <Circle className="w-5 h-5 text-muted-foreground" />
     }
   }
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "completed": return "border-green-200 bg-green-50"
-      case "current": return "border-blue-200 bg-blue-50"
-      default: return "border-muted bg-muted/50"
+      case "completed": 
+        return "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/50"
+      case "current": 
+        return "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/50"
+      default: 
+        return "border-muted bg-muted/50"
     }
   }
 
   return (
-    <section id="roadmap" className="py-20 bg-muted/30">
+    <section id="roadmap" className="py-20 bg-muted/30 dark:bg-muted/10">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Development Roadmap</h2>
