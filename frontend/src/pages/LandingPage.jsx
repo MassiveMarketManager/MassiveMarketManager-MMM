@@ -2,7 +2,6 @@ import { Hero } from "../components/landing/Hero"
 import { Features } from "../components/landing/Features" 
 import { TechStack } from "../components/landing/TechStack"
 import { QuickStart } from "../components/landing/QuickStart"
-import { Team } from "../components/landing/Team"
 import { Header } from "../components/landing/Header"
 import { Architecture } from "../components/landing/Architecture"
 import { Roadmap } from "../components/landing/Roadmap"
@@ -53,10 +52,6 @@ export default function LandingPage() {
         
         <section id="roadmap">
           <Roadmap />
-        </section>
-        
-        <section id="team">
-          <Team />
         </section>
 
       </main>
@@ -124,7 +119,7 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Company */}
+            {/* Company
             <div>
               <h4 className="font-semibold text-lg mb-6">Company</h4>
               <div className="space-y-4 text-muted-foreground">
@@ -134,8 +129,7 @@ export default function LandingPage() {
                 <a href="#" className="block hover:text-primary transition-colors">Partners</a>
               </div>
             </div>
-
-            {/* Legal */}
+            
             <div>
               <h4 className="font-semibold text-lg mb-6">Legal</h4>
               <div className="space-y-4 text-muted-foreground">
@@ -145,6 +139,7 @@ export default function LandingPage() {
                 <a href="#" className="block hover:text-primary transition-colors">Compliance</a>
               </div>
             </div>
+            */}
           </div>
           
           {/* Bottom Bar */}
