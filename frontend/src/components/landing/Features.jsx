@@ -37,8 +37,18 @@ function FeatureCard({ Icon, title, desc, className = "" }) {
 
 export function Features() {
   const [activeFeature, setActiveFeature] = useState(null)
+  const [isAnimationPaused, setIsAnimationPaused] = useState(false)
   const radiusX = 380
   const radiusY = 200
+
+  const handleIconHover = (feature) => {
+    setActiveFeature(feature)
+    setIsAnimationPaused(true)
+  }
+
+  const handleIconLeave = () => {
+    setIsAnimationPaused(false)
+  }
 
   return (
     <section id="features" className="py-20">
@@ -107,14 +117,16 @@ export function Features() {
                 radiusX={radiusX}
                 radiusY={radiusY}
                 iconSize={56} 
-                speed={0.3} 
+                speed={0.4} 
                 path
+                paused={isAnimationPaused}
               >
                 {items.map(({ icon: Icon, title }) => (
                   <motion.div 
                     key={title}
                     className="grid place-items-center rounded-full border bg-background/80 backdrop-blur-sm size-[56px] cursor-pointer hover:scale-110 hover:bg-primary/10 hover:border-primary/30 transition-all duration-300"
-                    onMouseEnter={() => setActiveFeature(items.find(item => item.title === title))}
+                    onMouseEnter={() => handleIconHover(items.find(item => item.title === title))}
+                    onMouseLeave={handleIconLeave}
                     whileHover={{ scale: 1.1 }}
                   >
                     <Icon className="w-6 h-6" aria-hidden="true" />
