@@ -11,6 +11,7 @@ export function OrbitingEllipses({
   path = true,
   iconSize = 30,
   speed = 1,
+  paused = false,
   ...props
 }) {
   const calculatedDuration = duration / speed
@@ -47,6 +48,7 @@ export function OrbitingEllipses({
               "--radius-y": radiusY,
               "--phase": `${phase}deg`,
               "--icon-size": `${iconSize}px`,
+              animationPlayState: paused ? 'paused' : 'running',
             }}
             className={cn(
               "animate-orbit-ellipse absolute left-1/2 top-1/2 flex size-[var(--icon-size)] -translate-x-1/2 -translate-y-1/2 transform-gpu items-center justify-center rounded-full",
