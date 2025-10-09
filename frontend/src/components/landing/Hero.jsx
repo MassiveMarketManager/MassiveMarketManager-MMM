@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Brain, Shield, Zap, BarChart3 } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import { Header } from "@/components/landing/Header"
 
 export function Hero() {
   const navigate = useNavigate()
@@ -52,7 +53,12 @@ export function Hero() {
             Start AI Trading
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
           </Button>
-          <Button size="lg" variant="outline" className="gap-2 h-12 px-8">
+          <Button 
+            size="lg"
+            variant="outline"
+            className="gap-2 h-12 px-8"
+            onClick={() => navigate(`#start`)}
+          >
             <Brain size={20} />
             See How It Works
           </Button>
