@@ -14,7 +14,6 @@ export function Header() {
     { name: "Features", href: "features" },
     { name: "Technology", href: "tech" },
     { name: "Quick Start", href: "start" },
-    { name: "Team", href: "team" },
     { name: "Roadmap", href: "roadmap" }
   ]
 
