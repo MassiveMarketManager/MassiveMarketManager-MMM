@@ -22,7 +22,7 @@ public class VerificationService {
         var t = new EmailVerificationToken();
         t.setToken(UUID.randomUUID().toString());
         t.setUser(user);
-        t.setExpiresAt(Instant.now().plus(Duration.ofHours(24)));
+        t.setExpiresAt(Instant.now().plus(Duration.ofMinutes(15)));
         repo.save(t);
         return t.getToken();
     }
