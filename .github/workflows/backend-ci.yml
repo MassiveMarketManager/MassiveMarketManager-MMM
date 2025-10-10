@@ -34,8 +34,8 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 21
+          distribution: openjdk
+          java-version: 25
           cache: maven
 
       - name: Build & test
