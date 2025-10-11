@@ -6,6 +6,7 @@ import CheckEmailForm from '@/components/auth/CheckEmailForm.jsx'
 import VerifyEmailForm from '@/components/auth/VerifyEmailForm.jsx'
 import DashboardOverview from "@/components/dashboard/overview/dashboard-overview.jsx"
 import DashboardBots from "@/components/dashboard/bots/dashboard-bots"
+import DashboardSettings from "@/components/dashboard/settings/dashboard-settings"
 import LandingPage from "./pages/LandingPage.jsx"
 import Auth from "./pages/Auth.jsx"
 import NotFoundPage from "./pages/NotFoundPage.jsx"
@@ -27,6 +28,7 @@ function App() {
           <Route path="overview" element={<DashboardOverview />} />
           <Route path="analytics" element={<></>} />
           <Route path="bots" element={<DashboardBots/>} />
+          <Route path="settings" element={<DashboardSettings/>} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
