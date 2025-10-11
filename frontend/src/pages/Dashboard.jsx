@@ -18,6 +18,8 @@ export default function Dashboard() {
         return { text: "Bots", showSelector: false }
       case "/dashboard/analytics":
         return { text: "Analytics", showSelector: true }
+      case "/dashboard/settings":
+        return { text: "Settings", showSelector: false }
       default:
         return { text: "Dashboard", showSelector: false }
     }
