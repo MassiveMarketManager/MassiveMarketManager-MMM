@@ -14,7 +14,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("MMM API")
-                        .version("0.1.0")
+                        .version("0.1.1")
                         .description("API documentation for MMM backend")
                         .contact(new Contact()
                                 .name("Nikolai Milenko")

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.massivemarketmanager</groupId>
 	<artifactId>backend</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<name>backend</name>
 	<description>backend</description>
 	<url/>
