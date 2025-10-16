@@ -10,9 +10,9 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOriginPatterns("*") // allow everybody in
+                .allowedOrigins("https://massivemarketmanager.de", "https://www.massivemarketmanager.de")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(false); // no cookies
+                .allowCredentials(true);
     }
 }
