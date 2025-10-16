@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          distribution: openjdk
+          distribution: temurin
           java-version: 25
           cache: maven
 
