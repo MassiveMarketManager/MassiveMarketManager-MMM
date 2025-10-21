@@ -150,7 +150,7 @@ export default function SignUpForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword1(!showPassword1)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   >
                     {showPassword1 ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 </button>
@@ -179,7 +179,7 @@ export default function SignUpForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword2(!showPassword2)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   >
                     {showPassword2 ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 </button>
