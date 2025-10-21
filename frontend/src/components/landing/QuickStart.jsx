@@ -47,7 +47,7 @@ export function QuickStart() {
         </div>
 
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="grid grid-cols-[auto_auto_auto_auto_auto_auto_auto] items-start gap-x-4 md:gap-x-6">
+          <div className="grid grid-cols-2 md:grid-cols-[auto_auto_auto_auto_auto_auto_auto] items-start gap-x-4 gap-y-6 md:gap-x-6 md:gap-y-2 justify-items-center relative">
            {steps.map((step, index) => {
             const isLast = index === steps.length - 1;
             return (
@@ -84,11 +84,63 @@ export function QuickStart() {
                   </p>
                 </div>
 
-                {index < steps.length - 1 && (
-                  <div className="flex items-center justify-center -mx-7">
-                    <ArrowLine className="w-16 h-16 text-gray-400 dark:text-gray-600" />
-                  </div>
-                )}
+                {/* Горизонтальные стрелки: на десктопе между всеми элементами, на мобильных только внутри рядов */}
+                  {index === 0 && (
+                    <div className="absolute top-5 left-1/2 -translate-x-1/2 md:static md:flex md:items-center md:justify-center md:-mx-7 md:translate-x-0">
+                      <ArrowLine className="w-10 h-10 md:w-16 md:h-16 text-gray-400 dark:text-gray-600" />
+                    </div>
+                  )}
+                  {index === 2 && (
+                    <div className="absolute top-[calc(100%-8rem)] left-1/2 -translate-x-1/2 md:static md:flex md:items-center md:justify-center md:-mx-7 md:translate-x-0">
+                      <ArrowLine className="w-10 h-10 md:w-16 md:h-16 text-gray-400 dark:text-gray-600" />
+                    </div>
+                  )}
+                  {index === 1 && (
+                    <div className="hidden md:flex items-center justify-center -mx-7">
+                      <ArrowLine className="w-16 h-16 text-gray-400 dark:text-gray-600" />
+                    </div>
+                  )}
+
+                  {index === 1 && (
+                    <div className="relative col-span-2 flex md:hidden items-center justify-center w-full">
+                      <svg
+                        className="absolute left-0 right-0 mx-auto w-[90%] h-18 text-gray-400 dark:text-gray-600"
+                        viewBox="0 0 280 130"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        {/* Волнистая диагональная линия — две волны, укорочена по вертикали */}
+                        <path
+                          d="
+                            M280 20
+                            Q210 60, 140 40
+                            T20 100
+                          "
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          vectorEffect="non-scaling-stroke"
+                          strokeLinecap="round"
+                          fill="none"
+                        />
+
+                        {/* Наконечник стрелки — точно по направлению линии */}
+                        <g transform="translate(20, 100) rotate(120)">
+                          <path
+                            d="M0 -8 L8 0 L0 8"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            vectorEffect="non-scaling-stroke"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </g>
+                      </svg>
+                    </div>
+                  )}
+
+
+
+
               </Fragment>
             );
           })}
