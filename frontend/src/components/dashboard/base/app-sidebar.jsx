@@ -16,13 +16,9 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/context/AuthContext"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+const navData = {
   navMain: [
     { title: "Overview", url: "/dashboard/overview", icon: IconDashboard },
     { title: "Analytics", url: "/dashboard/analytics", icon: IconChartBar },
@@ -38,18 +34,26 @@ const data = {
 }
 
 export function AppSidebar(props) {
+  const { user } = useAuth()
+
+  const displayUser = {
+    name: user?.email?.split("@")[0] || "User",
+    email: user?.email || "",
+    avatar: "",
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <NavUser user={data.user} />
+            <NavUser user={displayUser} />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navData.navMain} />
+        <NavSecondary items={navData.navSecondary} className="mt-auto" />
       </SidebarContent>
     </Sidebar>
   )

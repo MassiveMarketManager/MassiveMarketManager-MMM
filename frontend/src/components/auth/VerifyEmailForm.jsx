@@ -8,6 +8,7 @@ import { PartyPopper,Loader2Icon } from "lucide-react"
 import { Button } from '@/components/ui/button'
 
 import { toast } from "sonner"
+import { apiClient } from "@/lib/apiClient"
 
 export default function VerifyEmailForm() {
   const { search } = useLocation()
@@ -27,24 +28,12 @@ export default function VerifyEmailForm() {
         return
       }
       try {
-        let res = await fetch('http://localhost:8080/api/auth/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        })
-
-        // запасной: если бэк ждёт query param
-        if (!res.ok && res.status === 400) {
-          res = await fetch(`http://localhost:8080/api/auth/verify?token=${encodeURIComponent(token)}`, { method: 'POST' })
-        }
-
-        const isJson = res.headers.get('content-type')?.includes('application/json')
-        const payload = isJson ? await res.json() : await res.text()
-
-        if (!res.ok) {
-          const msg = typeof payload === 'string' ? payload : payload?.detail || payload?.message || `HTTP ${res.status}`
-          throw new Error(msg)
-        }
+        // Backend expects token as a query param (POST /api/auth/verify?token=...)
+        await apiClient.post(
+          `/api/auth/verify?token=${encodeURIComponent(token)}`,
+          undefined,
+          { auth: false }
+        )
 
         setState({ loading: false, ok: true })
         toast.success("Email verified!", {

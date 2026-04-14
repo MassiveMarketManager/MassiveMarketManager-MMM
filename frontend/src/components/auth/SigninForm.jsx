@@ -13,42 +13,32 @@ import { useState } from "react"
 import { Loader2Icon, Eye, EyeOff, XCircle } from "lucide-react"
 import { toast } from "sonner"
 import { Toaster } from "@/components/ui/sonner"
+import { useNavigate, useLocation } from "react-router-dom"
+import { useAuth } from "@/context/AuthContext"
 
 export default function SigninForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  
 
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/sign-in", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      })
+      await login(email.trim(), password)
 
-      if (!res.ok) {
-        console.log("❌ Login failed")
-        throw new Error("Invalid email or password")
-      }
-
-      const data = await res.json()
-      console.log("✅ Logged in:", data)
-
-      // тут можно сохранить токен в localStorage или context
-      localStorage.setItem("token", data.token)
-
+      // Redirect to the page the user was trying to reach, or /dashboard
+      const redirectTo = location.state?.from?.pathname || "/dashboard"
+      navigate(redirectTo, { replace: true })
     } catch (err) {
       toast.error("Login failed", {
-        description: err.message,
+        description: err?.message || "Invalid email or password",
         position: "top-center",
         icon: <XCircle className="h-5 w-5 text-red-500" />,
       })
