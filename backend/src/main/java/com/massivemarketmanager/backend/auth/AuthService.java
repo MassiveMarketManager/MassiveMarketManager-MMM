@@ -42,7 +42,7 @@ public class AuthService {
             throw new AuthException("USER_ALREADY_EXISTS");
         }
 
-        UserRequestDto userRequestDto = new UserRequestDto(request.email(), passwordEncoder.encode(rawPassword));
+        UserRequestDto userRequestDto = new UserRequestDto(email, passwordEncoder.encode(rawPassword));
 
         var user = userMapper.toEntity(userRequestDto);
         userRepository.save(user);
