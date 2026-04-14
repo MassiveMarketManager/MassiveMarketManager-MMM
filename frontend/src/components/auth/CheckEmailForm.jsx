@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { CheckCircle2, XCircle } from "lucide-react"
 
 import { toast } from "sonner"
+import { apiClient } from "@/lib/apiClient"
 
 export default function CheckEmailForm() {
   const { search } = useLocation()
@@ -19,19 +20,11 @@ export default function CheckEmailForm() {
   
 
   const resend = async () => {
-    //setMsg(null)
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:8080/api/auth/resend-verification', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      //setMsg({ ok: true, text: 'Verification email sent again' })
+      await apiClient.post('/api/auth/resend-verification', { email }, { auth: false })
       makeToast("Verification email sent again", "success")
     } catch (e) {
-      //setMsg({ ok: false, text: e.message || 'Failed to resend' })
       makeToast(e.message || "Failed to resend", "error")
     } finally {
       setLoading(false)

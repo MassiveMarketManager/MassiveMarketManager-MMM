@@ -16,6 +16,7 @@ import { toast } from "sonner"
 import { Toaster } from "@/components/ui/sonner"
 
 import { useNavigate } from "react-router-dom"
+import { apiClient } from "@/lib/apiClient"
 
 export default function SignUpForm() {
   const [email, setEmail] = useState("")
@@ -62,36 +63,12 @@ export default function SignUpForm() {
 
     setLoading(true);
     try {
-      const res = await fetch("https://massivemarketmanager.de/api/auth/sign-up", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: emailNorm,
-          password: password1,
-        }),
-      });
-
-      const isJson = res.headers.get("content-type")?.includes("application/json");
-      const payload = isJson ? await res.json() : await res.text();
-
-      if (!res.ok) {
-        console.log("Error payload:", payload);
-        let msg = typeof payload === "string" ? payload : "";
-        if (!msg && payload && typeof payload === "object") {
-          if (payload.detail) msg = payload.detail;
-          else if (payload.message) msg = payload.message;
-          else if (Array.isArray(payload.errors) && payload.errors.length) {
-            msg = payload.errors
-              .map(e => e.defaultMessage || e.message || `${e.field || "field"} invalid`)
-              .slice(0, 2)
-              .join("; ");
-          }
-        }
-        throw new Error(msg || `HTTP ${res.status}`);
-      }
-
+      await apiClient.post(
+        "/api/auth/sign-up",
+        { email: emailNorm, password: password1 },
+        { auth: false }
+      )
       navigate(`/auth/check-email?email=${encodeURIComponent(emailNorm)}`)
-
     } catch (err) {
       toast.error("Registration failed", {
         description: err?.message || "Unexpected error",
