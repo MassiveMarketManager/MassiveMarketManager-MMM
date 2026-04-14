@@ -28,11 +28,20 @@ import {
 } from "@/components/ui/sidebar"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "@/components/theme-provider"
+import { useAuth } from "@/context/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar()
 
   const { theme, setTheme } = useTheme()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate("/auth/sign-in", { replace: true })
+  }
 
   const toggleTheme = () => {
     if (theme === "light") setTheme("dark")
@@ -88,7 +97,7 @@ export function NavUser({ user }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

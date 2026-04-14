@@ -10,6 +10,7 @@ import DashboardSettings from "@/components/dashboard/settings/dashboard-setting
 import LandingPage from "./pages/LandingPage.jsx"
 import Auth from "./pages/Auth.jsx"
 import NotFoundPage from "./pages/NotFoundPage.jsx"
+import ProtectedRoute from "@/components/ProtectedRoute.jsx"
 
 
 function App() {
@@ -23,7 +24,14 @@ function App() {
           <Route path='check-email' element={<CheckEmailForm />} />
           <Route path='verify' element={<VerifyEmailForm />} />
         </Route>
-        <Route path="/dashboard" element={<Dashboard />} >
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="overview" replace />} />
           <Route path="overview" element={<DashboardOverview />} />
           <Route path="analytics" element={<></>} />
