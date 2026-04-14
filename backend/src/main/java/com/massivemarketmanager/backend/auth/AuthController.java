@@ -1,6 +1,7 @@
 package com.massivemarketmanager.backend.auth;
 
 
+import com.massivemarketmanager.backend.user.CurrentUserService;
 import com.massivemarketmanager.backend.user.UserResponseDto;
 import jakarta.mail.MessagingException;
 import jakarta.security.auth.message.AuthException;
@@ -19,7 +20,11 @@ import java.net.URI;
 public class AuthController {
     private final AuthService authService;
     private final VerificationService verificationService;
+    private final CurrentUserService currentUserService;
 
+    /**
+     * Registers user and returns the created resource location
+     */
     @PostMapping("/sign-up")
     public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto request,
                                                   UriComponentsBuilder uriBuilder) throws AuthException, MessagingException {
@@ -46,5 +51,11 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CACHE_CONTROL, "no-store")
                 .body(body);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto> getCurrentUser() {
+        UserResponseDto userDto = currentUserService.getCurrentUserDto();
+        return ResponseEntity.ok(userDto);
     }
 }
