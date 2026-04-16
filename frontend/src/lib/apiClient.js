@@ -1,4 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:9000"
+// In production the frontend is served by the backend (same origin),
+// so API_BASE_URL should be empty. For local dev, override via .env.local
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ""
 
 export const TOKEN_STORAGE_KEY = "mmm_access_token"
 export const REFRESH_STORAGE_KEY = "mmm_refresh_token"
