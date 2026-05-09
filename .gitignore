@@ -59,3 +59,8 @@ build/
 .env
 
 backend/ops/backups/
+
+backend/src/main/resources/static/
+
+.claude/
+frontend/

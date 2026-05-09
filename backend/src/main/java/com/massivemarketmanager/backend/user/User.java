@@ -24,8 +24,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+    // @Column(nullable = false, unique = true)
+    // private String username;
 
     @Column(nullable = false, unique = true, length = 254)
     private String email;
@@ -39,11 +39,13 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "account_status", nullable = false)
-    private AccountStatus accountStatus;
+    @Builder.Default
+    private AccountStatus accountStatus = AccountStatus.PENDING;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role", nullable = false)
-    private UserRole role;
+    @Builder.Default
+    private UserRole role = UserRole.USER;
 
     @ElementCollection
     @CollectionTable(name = "user_trades", joinColumns = @JoinColumn(name = "user_id"))

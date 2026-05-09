@@ -1,5 +1,5 @@
 # ------------ Build stage ------------
-FROM maven:3.9.9-eclipse-temurin-21 AS build
+FROM maven:3.9.11-eclipse-temurin-25 AS build
 WORKDIR /app
 
 # Caching dependencies
@@ -11,7 +11,7 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.m2 mvn -B -DskipTests clean package
 
 # ------------ Runtime stage ------------
-FROM eclipse-temurin:21-jre AS runtime
+FROM eclipse-temurin:25-jre AS runtime
 LABEL org.opencontainers.image.title="MassiveMarketManager" \
       org.opencontainers.image.description="Spring Boot backend for MassiveMarketManager" \
       org.opencontainers.image.source="https://example.com/your-repo" \
@@ -27,5 +27,5 @@ COPY --from=build /app/target/*.jar /opt/app/app.jar
 # Container-aware JVM defaults
 ENV JAVA_TOOL_OPTIONS="-XX:+ExitOnOutOfMemoryError -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=25.0 -Dfile.encoding=UTF-8 -Duser.timezone=UTC"
 
-EXPOSE 8080
+EXPOSE 9000
 ENTRYPOINT ["java","-jar","/opt/app/app.jar"]
