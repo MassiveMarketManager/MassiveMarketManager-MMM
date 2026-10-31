@@ -92,6 +92,7 @@ services:
       SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      APP_MAIL_FROM: ${APP_MAIL_FROM:-no-reply@massivemarketmanager.de}
       APP_FRONTEND_BASE_URL: ${APP_FRONTEND_BASE_URL:-https://massivemarketmanager.de}
     ports: [ "${APP_PORT:-9000}:9000" ]
     networks: [ "backend_mmm_net" ]
@@ -147,6 +148,7 @@ services:
       SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+      APP_MAIL_FROM: ${APP_MAIL_FROM:-no-reply@massivemarketmanager.de}
       APP_FRONTEND_BASE_URL: ${APP_FRONTEND_BASE_URL:-https://massivemarketmanager.de}
     ports: ["${APP_PORT:-9000}:9000"]
     networks: [backend_mmm_net]
