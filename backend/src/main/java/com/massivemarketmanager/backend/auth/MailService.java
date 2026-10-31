@@ -3,11 +3,14 @@ package com.massivemarketmanager.backend.auth;
 import com.massivemarketmanager.backend.config.AppProps;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MailService {
@@ -25,7 +28,7 @@ public class MailService {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body style="margin: 0; padding: 0; background: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;">
-        <table align="center" width="100%%%%" style="max-width: 480px; margin: 40px auto; background: linear-gradient(135deg, #0f0f0f 0%%, #1a1a1a 100%%); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 255, 128, 0.1); overflow: hidden; border: 1px solid #262626;">
+        <table align="center" width="100%%" style="max-width: 480px; margin: 40px auto; background: linear-gradient(135deg, #0f0f0f 0%%, #1a1a1a 100%%); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 255, 128, 0.1); overflow: hidden; border: 1px solid #262626;">
             <!-- Header with Tech Elements -->
             <tr>
                 <td style="padding: 48px 40px 32px; text-align: center; background: linear-gradient(135deg, #000000 0%%, #059669 100%%); position: relative;">
@@ -47,7 +50,7 @@ public class MailService {
                         Join the forefront of decentralized finance. Your ML-driven trading terminal is waiting.
                     </p>
                     <!-- Stats Grid -->
-                    <table width="100%%%%" style="margin: 32px 0; background: rgba(255, 255, 255, 0.02); border-radius: 12px; border: 1px solid #334155; padding: 20px;">
+                    <table width="100%%" style="margin: 32px 0; background: rgba(255, 255, 255, 0.02); border-radius: 12px; border: 1px solid #334155; padding: 20px;">
                         <tr>
                             <td style="text-align: center; padding: 0 16px;">
                                 <div style="font-size: 24px; font-weight: 800; color: #10b981;">AI</div>
@@ -151,6 +154,11 @@ public class MailService {
         helper.setTo(to);
         helper.setSubject(SUBJECT_VERIFY);
         helper.setText(TEXT_VERIFY.formatted(link), HTML_VERIFY.formatted(link));
-        mailSender.send(msg);
+        try {
+            mailSender.send(msg);
+        } catch (MailException e) {
+            log.error("Failed to send verification email to {} via {}", to, appProps.mail().from(), e);
+            throw e;
+        }
     }
 }
