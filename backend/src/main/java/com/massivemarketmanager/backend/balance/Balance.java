@@ -13,18 +13,24 @@ import java.math.BigDecimal;
 @Builder
 @ToString
 @Entity
-@Table(name = "balance")
+@Table(
+    name = "balance",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "ux_user_id_token_name",
+            columnNames = {"user_id", "token_name"}
+        )
+    }
+)
 public class Balance {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "token_name", nullable = false, unique = true)
+    @Column(name = "token_name", nullable = false)
     private String tokenName;
 
-    private BigDecimal balance;
+    private BigDecimal tokenBalance;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

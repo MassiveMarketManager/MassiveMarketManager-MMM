@@ -51,7 +51,7 @@ public class DashboardService {
 
     private Double calculateTotalBalance(User user) {
         return user.getBalances().stream()
-                .mapToDouble(balance -> balance.getBalance().doubleValue())
+                .mapToDouble(balance -> balance.getTokenBalance().doubleValue())
                 .sum();
     }
 }
