@@ -121,6 +121,21 @@
   }
 }
 
+/*
+ * Browser autofill repaints inputs with its own light background and dark text,
+ * which hides overlaid icons (password peek) in the dark theme. Keep the theme
+ * colors instead: the long transition stops the autofill background from ever
+ * being painted. Unlayered on purpose, so it wins over the transition utility
+ * on <Input>.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--foreground);
+  caret-color: var(--foreground);
+  transition: background-color 100000s ease-in-out 0s, box-shadow 0.15s ease;
+}
+
 @layer utilities {
   @property --t {
     syntax: "<angle>";
