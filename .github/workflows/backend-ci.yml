@@ -5,7 +5,7 @@ on:
     branches: [ "feature/backend" ]
     paths: [ "backend/**", ".github/workflows/backend-ci.yml" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "feature/backend", "dev", "hotfix-*", "main" ]
     paths: [ "backend/**", ".github/workflows/backend-ci.yml" ]
 
 permissions:
