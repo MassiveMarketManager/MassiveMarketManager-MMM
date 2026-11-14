@@ -118,11 +118,10 @@ export default function SignUpForm() {
                   placeholder="password"
                   value={password1}
                   onChange={(e) => setPassword1(e.target.value)}
-                  className={
-                    password2 && password1 !== password2
-                      ? "border-red-500"
-                      : ""
-                  }
+                  className={cn(
+                    "pr-10",
+                    password2 && password1 !== password2 && "border-red-500"
+                  )}
                 />
                 <button
                   type="button"
@@ -138,20 +137,19 @@ export default function SignUpForm() {
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="password">Confirm Password</Label>
+              <Label htmlFor="confirm-password">Confirm Password</Label>
               <div className="relative">
                 <Input
-                  id="password"
+                  id="confirm-password"
                   type={showPassword2 ? "text" : "password"}
                   required
                   placeholder="password"
                   value={password2}
                   onChange={(e) => setPassword2(e.target.value)}
-                  className={
-                    password2 && password1 !== password2
-                      ? "border-red-500"
-                      : ""
-                  }
+                  className={cn(
+                    "pr-10",
+                    password2 && password1 !== password2 && "border-red-500"
+                  )}
                 />
                 <button
                   type="button"
