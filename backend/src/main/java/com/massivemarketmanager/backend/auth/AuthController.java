@@ -18,44 +18,58 @@ import java.net.URI;
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthService authService;
-    private final VerificationService verificationService;
-    private final CurrentUserService currentUserService;
+  private final AuthService authService;
+  private final VerificationService verificationService;
+  private final CurrentUserService currentUserService;
 
-    /**
-     * Registers user and returns the created resource location
-     */
-    @PostMapping("/sign-up")
-    public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto request,
-                                                  UriComponentsBuilder uriBuilder) throws AuthException, MessagingException {
-        UserResponseDto user = authService.register(request);
-        URI location = uriBuilder.path("/users/{id}").buildAndExpand(user.id()).toUri();
-        return ResponseEntity.created(location).body(user);
-    }
+  /**
+   * Registers user and returns the created resource location
+   */
+  @PostMapping("/sign-up")
+  public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody SignUpRequestDto request,
+      UriComponentsBuilder uriBuilder) throws AuthException, MessagingException {
+    UserResponseDto user = authService.register(request);
+    URI location = uriBuilder.path("/users/{id}").buildAndExpand(user.id()).toUri();
+    return ResponseEntity.created(location).body(user);
+  }
 
-    @PostMapping("/verify")
-    public ResponseEntity<Void> verify(@RequestParam("token") String token) throws AuthException {
-        verificationService.verify(token);
-        return ResponseEntity.noContent().build();
-    }
+  @PostMapping("/verify")
+  public ResponseEntity<Void> verify(@RequestParam("token") String token) throws AuthException {
+    verificationService.verify(token);
+    return ResponseEntity.noContent().build();
+  }
 
-    @PostMapping("/resend-verification")
-    public ResponseEntity<Void> resend(@Valid @RequestBody ResendVerificationRequest request) {
-        authService.resendVerification(request.email());
-        return ResponseEntity.noContent().build();
-    }
+  @PostMapping("/resend-verification")
+  public ResponseEntity<Void> resend(@Valid @RequestBody ResendVerificationRequest request) {
+    authService.resendVerification(request.email());
+    return ResponseEntity.noContent().build();
+  }
 
-    @PostMapping("/sign-in")
-    public ResponseEntity<AuthResponseDto> signIn(@Valid @RequestBody SignInRequestDto request) throws AuthException {
-        AuthResponseDto body = authService.signIn(request);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CACHE_CONTROL, "no-store")
-                .body(body);
-    }
+  @PostMapping("/sign-in")
+  public ResponseEntity<AuthResponseDto> signIn(@Valid @RequestBody SignInRequestDto request) throws AuthException {
+    AuthResponseDto body = authService.signIn(request);
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CACHE_CONTROL, "no-store")
+        .body(body);
+  }
 
-    @GetMapping("/me")
-    public ResponseEntity<UserResponseDto> getCurrentUser() {
-        UserResponseDto userDto = currentUserService.getCurrentUserDto();
-        return ResponseEntity.ok(userDto);
-    }
+  @PostMapping("/refresh")
+  public ResponseEntity<AuthResponseDto> refresh(@Valid @RequestBody RefreshRequestDto request) throws AuthException {
+    AuthResponseDto body = authService.refresh(request.refreshToken());
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CACHE_CONTROL, "no-store")
+        .body(body);
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(@Valid @RequestBody RefreshRequestDto request) {
+    authService.logout(request.refreshToken());
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/me")
+  public ResponseEntity<UserResponseDto> getCurrentUser() {
+    UserResponseDto userDto = currentUserService.getCurrentUserDto();
+    return ResponseEntity.ok(userDto);
+  }
 }
