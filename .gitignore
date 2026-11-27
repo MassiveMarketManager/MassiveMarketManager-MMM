@@ -56,7 +56,6 @@ build/
 
 ### VS Code ###
 .vscode/
-.env
 
 backend/ops/backups/
 
@@ -64,3 +63,8 @@ backend/src/main/resources/static/
 
 .claude/
 frontend/
+
+# Environment files with secrets
+.env
+.env.*
+!.env.example
