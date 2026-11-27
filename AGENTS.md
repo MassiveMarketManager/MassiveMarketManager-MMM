@@ -7,11 +7,11 @@ Instructions for AI coding agents working on this repository. Human-oriented det
 | You change files in | Base branch and PR target |
 |---------------------|---------------------------|
 | `frontend/`         | `feature/frontend`        |
-| `backend/`          | `feature/backend`         |
-| both                | two separate PRs          |
+| `backend/`, `ml/`, `docs/` | `feature/backend`  |
+| `frontend/` and anything else | two separate PRs |
 
 - **Never** branch from `dev` or `main`, and never open a PR into them. `dev` is filled only by maintainers.
-- `feature/frontend` and `feature/backend` contain **only their own directory**. Do not add the other half of the tree to them. If your diff against the target branch contains files outside your directory, the base is wrong — stop and rebase:
+- `feature/frontend` and `feature/backend` contain **only their part of the tree** (see the table) plus `.github/` and `README.md`. Do not add the other half of the tree to them. If your diff against the target branch contains files outside your directory, the base is wrong — stop and rebase:
 
 ```bash
 git rebase --onto upstream/feature/frontend upstream/dev <your-branch>   # or feature/backend
