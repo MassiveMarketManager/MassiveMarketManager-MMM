@@ -53,6 +53,7 @@ A change that touches both `backend/` and `frontend/` needs **two PRs**, one per
 
 - Issues labeled `good first issue` or `help wanted` are open for contributors.
 - For any other issue, comment on it first and wait for a maintainer before you start. Some issues are deliberately kept for the maintainers.
+- Issues labeled `maintainers-only` are not open for outside contributions. Pull requests for them will be closed without review.
 - One issue per PR. Put `Closes #<number>` in the PR description.
 
 ## Running the project locally
