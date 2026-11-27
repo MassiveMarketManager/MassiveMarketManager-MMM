@@ -17,10 +17,12 @@ Backend and frontend are developed on separate, long-lived branches that contain
 
 | Branch             | Contains                 | Base your work on it when you change… |
 |--------------------|--------------------------|---------------------------------------|
-| `feature/backend`  | `backend/`, `.github/`   | anything in `backend/`                |
-| `feature/frontend` | `frontend/`              | anything in `frontend/`               |
-| `dev`              | everything               | **never** — see below                 |
-| `main`             | repository meta files    | **never**                             |
+| `feature/backend`  | `backend/`, `ml/`, `docs/` | anything in `backend/`, `ml/`, `docs/` |
+| `feature/frontend` | `frontend/`                | anything in `frontend/`                |
+| `dev`              | everything                 | **never** — see below                  |
+| `main`             | repository meta files      | **never**                              |
+
+Both feature branches also carry `.github/` (CI workflows) and `README.md`. Do not change them unless the issue is about them.
 
 `dev` is the integration branch. It only receives merges from `feature/backend` and `feature/frontend`, done by maintainers when a release is prepared. **Pull requests into `dev` or `main` are not accepted.**
 
