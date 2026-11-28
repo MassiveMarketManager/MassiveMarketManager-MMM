@@ -1,0 +1,28 @@
+# Changes to these paths need an approving review from a maintainer.
+# Keep this file identical on every long-lived branch.
+
+# CI, Dependabot, repository settings as code
+/.github/                                                   @MassiveMarketManager/maintainers
+
+# Instructions for contributors and AI agents
+/CONTRIBUTING.md                                            @MassiveMarketManager/maintainers
+/AGENTS.md                                                  @MassiveMarketManager/maintainers
+
+# Deployment and infrastructure
+/backend/compose.yaml                                       @MassiveMarketManager/maintainers
+/backend/ops/                                               @MassiveMarketManager/maintainers
+/backend/env.example                                        @MassiveMarketManager/maintainers
+Dockerfile                                                  @MassiveMarketManager/maintainers
+
+# Build tooling and dependencies
+/backend/pom.xml                                            @MassiveMarketManager/maintainers
+/backend/mvnw                                               @MassiveMarketManager/maintainers
+/backend/mvnw.cmd                                           @MassiveMarketManager/maintainers
+/backend/.mvn/                                              @MassiveMarketManager/maintainers
+package.json                                                @MassiveMarketManager/maintainers
+package-lock.json                                           @MassiveMarketManager/maintainers
+
+# Security configuration
+/backend/src/main/java/com/massivemarketmanager/backend/config/     @MassiveMarketManager/maintainers
+/backend/src/main/java/com/massivemarketmanager/backend/security/   @MassiveMarketManager/maintainers
+/backend/src/main/resources/application*.properties                 @MassiveMarketManager/maintainers
