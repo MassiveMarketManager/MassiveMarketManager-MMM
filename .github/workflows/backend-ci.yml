@@ -46,7 +46,15 @@ jobs:
             echo "backend=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')
+          # The files API returns at most 3000 files; for bigger PRs (or a non-numeric answer)
+          # assume backend changed.
+          changed=$(gh api "repos/$REPO/pulls/$PR" --jq '.changed_files')
+          if ! [ "$changed" -lt 3000 ] 2>/dev/null; then
+            echo "backend=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # previous_filename: a file moved out of backend/ is a backend change too.
+          files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | .filename, (.previous_filename // empty)')
           if grep -qE '^(backend/|\.github/workflows/backend-ci\.yml$)' <<< "$files"; then
             echo "backend=true" >> "$GITHUB_OUTPUT"
           else

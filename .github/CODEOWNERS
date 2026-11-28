@@ -9,10 +9,10 @@
 /AGENTS.md                                                  @MassiveMarketManager/maintainers
 
 # Deployment and infrastructure
-/backend/compose.yaml                                       @MassiveMarketManager/maintainers
+/backend/*compose*.y*ml                                     @MassiveMarketManager/maintainers
 /backend/ops/                                               @MassiveMarketManager/maintainers
 /backend/env.example                                        @MassiveMarketManager/maintainers
-Dockerfile                                                  @MassiveMarketManager/maintainers
+Dockerfile*                                                 @MassiveMarketManager/maintainers
 
 # Build tooling and dependencies
 /backend/pom.xml                                            @MassiveMarketManager/maintainers
@@ -22,7 +22,9 @@ Dockerfile                                                  @MassiveMarketManage
 package.json                                                @MassiveMarketManager/maintainers
 package-lock.json                                           @MassiveMarketManager/maintainers
 
-# Security configuration
+# Security configuration, authentication, encryption of wallet keys
 /backend/src/main/java/com/massivemarketmanager/backend/config/     @MassiveMarketManager/maintainers
 /backend/src/main/java/com/massivemarketmanager/backend/security/   @MassiveMarketManager/maintainers
+/backend/src/main/java/com/massivemarketmanager/backend/auth/       @MassiveMarketManager/maintainers
+/backend/src/main/java/com/massivemarketmanager/backend/encryption/ @MassiveMarketManager/maintainers
 /backend/src/main/resources/application*.properties                 @MassiveMarketManager/maintainers
