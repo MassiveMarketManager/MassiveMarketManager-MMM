@@ -17,8 +17,8 @@ export default function DashboardSettings() {
         <div className="px-4 space-y-4 lg:px-6">
 
           <Collapsible open={openGeneral} onOpenChange={setOpenGeneral}>
-              <div className="rounded-xl border bg-white shadow-sm transition-all">
-                <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-lg font-medium hover:bg-gray-50 rounded-t-xl">
+              <div className="rounded-xl border bg-card text-card-foreground shadow-sm transition-all">
+                <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-lg font-medium rounded-t-xl hover:bg-accent hover:text-accent-foreground">
                   <span>General</span>
                   {openGeneral ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </CollapsibleTrigger>
@@ -30,8 +30,8 @@ export default function DashboardSettings() {
 
             {/* ACCOUNT SETTINGS */}
             <Collapsible open={openAccount} onOpenChange={setOpenAccount}>
-              <div className="rounded-xl border bg-white shadow-sm transition-all">
-                <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-lg font-medium hover:bg-gray-50 rounded-t-xl">
+              <div className="rounded-xl border bg-card text-card-foreground shadow-sm transition-all">
+                <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-lg font-medium rounded-t-xl hover:bg-accent hover:text-accent-foreground">
                   <span>Account</span>
                   {openAccount ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </CollapsibleTrigger>
@@ -42,8 +42,8 @@ export default function DashboardSettings() {
             </Collapsible>
 
             <Collapsible open={openSecurity} onOpenChange={setOpenSecurity}>
-              <div className="rounded-xl border border-red-500 bg-white shadow-sm transition-all">
-                <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-lg font-medium hover:bg-gray-50 rounded-t-xl">
+              <div className="rounded-xl border border-destructive bg-card text-card-foreground shadow-sm transition-all">
+                <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-lg font-medium rounded-t-xl hover:bg-accent hover:text-accent-foreground">
                   <span>Delete Account</span>
                   {openSecurity ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </CollapsibleTrigger>
