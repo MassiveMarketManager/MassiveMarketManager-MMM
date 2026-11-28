@@ -180,7 +180,7 @@
                         <path>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-configuration-processor</artifactId>
-                            <version>4.0.5</version>
+                            <version>4.2.0</version>
                         </path>
 					</annotationProcessorPaths>
                     <compilerArgs>
