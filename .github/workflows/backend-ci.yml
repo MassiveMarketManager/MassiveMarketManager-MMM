@@ -6,11 +6,11 @@ on:
     paths: [ "backend/**", ".github/workflows/backend-ci.yml" ]
   pull_request:
     branches: [ "feature/backend", "dev", "hotfix-*", "main" ]
-    paths: [ "backend/**", ".github/workflows/backend-ci.yml" ]
+    # No paths filter: build_test_coverage is a required check and must report on every PR.
+    # The changes job skips the build when backend/ is untouched; a skipped job counts as passed.
 
 permissions:
   contents: read
-  packages: write
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -24,7 +24,40 @@ defaults:
     working-directory: backend
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.diff.outputs.backend }}
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - id: diff
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ "$EVENT" != "pull_request" ]; then
+            echo "backend=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')
+          if grep -qE '^(backend/|\.github/workflows/backend-ci\.yml$)' <<< "$files"; then
+            echo "backend=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "backend=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build_test_coverage:
+    needs: changes
+    # Runs unless the changes job explicitly found no backend changes,
+    # so a failure in change detection never turns into a silently skipped (= passed) check.
+    if: ${{ !cancelled() && needs.changes.outputs.backend != 'false' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -74,6 +107,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_test_coverage
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feature/backend')
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
 
